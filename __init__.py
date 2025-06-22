@@ -14,17 +14,17 @@ def create_app():
         pass
 
     # MongoDB Configuration
-    app.config["MONGO_URI"] = "mongodb://localhost:27017/llts_db"  # Replace with Atlas URI if needed
+    app.config["MONGO_URI"] = os.getenv("MONGO_URI")  # Or use your Atlas URI
 
     mongo.init_app(app)
     CORS(app)
 
-    # Import and register routes
-    from backend.routes.auth import auth_bp
-    from backend.routes.owner import owner_bp
-    from backend.routes.worker import worker_bp
-    from backend.routes.tender import tender_bp
-    from backend.routes.auction import auction_bp
+    # ✅ Import and register routes without `backend.`
+    from routes.auth import auth_bp
+    from routes.owner import owner_bp
+    from routes.worker import worker_bp
+    from routes.tender import tender_bp
+    from routes.auction import auction_bp
 
     app.register_blueprint(auth_bp, url_prefix="/api")
     app.register_blueprint(owner_bp, url_prefix="/api/owner")

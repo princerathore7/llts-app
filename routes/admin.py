@@ -1,8 +1,8 @@
 from flask import Blueprint, jsonify, request
-from backend.mongo import mongo
+from mongo import mongo
 from bson import ObjectId
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
-from backend.models.token import add_tokens
+from models.token import add_tokens
 
 admin_bp = Blueprint('admin_bp', __name__)
 

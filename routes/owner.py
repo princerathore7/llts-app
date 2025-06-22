@@ -1,10 +1,15 @@
-from flask import Blueprint, jsonify, request
-from backend.mongo import mongo
-from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_request
+from flask import Blueprint, request, jsonify
+from werkzeug.security import generate_password_hash, check_password_hash
 from bson import ObjectId
+from flask_jwt_extended import create_access_token
+from flask_cors import cross_origin, CORS
+
+import os
+from dotenv import load_dotenv
 from datetime import datetime
-from flask_cors import cross_origin
-from flask import redirect
+from mongo import mongo
+from models.token import init_token_record
+
 owner_bp = Blueprint('owner_bp', __name__)
 
 ALLOWED_ORIGINS = [
