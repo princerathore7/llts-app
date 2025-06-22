@@ -8,6 +8,8 @@ from routes.admin import admin_bp
 from routes.report import report_bp
 from routes.token import token_bp
 from routes.razorpay_webhook import razorpay_bp
+import os
+
 
 # ✅ Load .env from parent directory (LLTS/.env)
 dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
