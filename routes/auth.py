@@ -8,7 +8,7 @@ from flask_cors import CORS
 import os
 from dotenv import load_dotenv
 from datetime import datetime
-from backend.mongo import mongo
+from mongo import mongo
 from backend.models.token import init_token_record  # ✅ Import token initializer
 
 # ✅ Load environment variables

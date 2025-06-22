@@ -3,7 +3,8 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_request
 from backend.models.token import get_token_record, add_tokens
 from bson import ObjectId
-from backend.mongo import mongo
+from mongo import mongo
+
 
 token_bp = Blueprint("token", __name__)
 
