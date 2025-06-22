@@ -1,6 +1,7 @@
 from bson import ObjectId
 from datetime import datetime
-from backend.mongo import mongo
+from mongo import mongo
+
 
 # =============================
 # 🔍 Get Token Record for User
