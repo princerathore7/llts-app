@@ -11,11 +11,13 @@ from backend.routes.report import report_bp
 from backend.routes.token import token_bp
 from backend.routes.razorpay_webhook import razorpay_bp
 from flask_jwt_extended import JWTManager
-import os
 from dotenv import load_dotenv
+import os
 
-# 🔐 Load environment variables
-load_dotenv()
+# ✅ Load .env from parent directory (LLTS/.env)
+dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
+load_dotenv(dotenv_path)
+
 
 # ✅ Initialize Flask app
 app = Flask(__name__)
