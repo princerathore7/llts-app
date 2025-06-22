@@ -8,9 +8,8 @@ from flask_cors import CORS
 import os
 from dotenv import load_dotenv
 from datetime import datetime
-from mongo import mongo
-from models.token import init_token_record
-  # ✅ Import token initializer
+from backend.mongo import mongo
+from backend.models.token import init_token_record  # ✅ Import token initializer
 
 # ✅ Load environment variables
 env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '.env'))

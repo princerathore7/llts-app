@@ -1,8 +1,7 @@
 from flask import Blueprint, request, jsonify
 import hmac, hashlib
 import os
-from mongo import mongo
-
+from backend.mongo import mongo
 from bson import ObjectId
 from dotenv import load_dotenv
 

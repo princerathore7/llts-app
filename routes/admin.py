@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from mongo import mongo
+from backend.mongo import mongo
 from bson import ObjectId
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from backend.models.token import add_tokens
