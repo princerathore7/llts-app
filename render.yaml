@@ -2,7 +2,7 @@ services:
   - type: web
     name: llts-app
     env: python
-    buildCommand: "pip install -r requirements.txt"
+    buildCommand: "cd .. && pip install -r LLTS/requirements.txt"
     startCommand: "gunicorn backend.app:app"
     envVars:
       - key: FLASK_ENV
