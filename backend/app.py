@@ -1,18 +1,13 @@
-from flask import Flask, jsonify, request
-from flask_cors import CORS
-from backend.mongo import mongo
-from backend.routes.auth import auth_bp
-from backend.routes.worker import worker_bp
-from backend.routes.tender import tender_bp
-from backend.routes.auction import auction_bp
-from backend.routes.owner import owner_bp
-from backend.routes.admin import admin_bp
-from backend.routes.report import report_bp
-from backend.routes.token import token_bp
-from backend.routes.razorpay_webhook import razorpay_bp
-from flask_jwt_extended import JWTManager
-from dotenv import load_dotenv
-import os
+from mongo import mongo
+from routes.auth import auth_bp
+from routes.worker import worker_bp
+from routes.tender import tender_bp
+from routes.auction import auction_bp
+from routes.owner import owner_bp
+from routes.admin import admin_bp
+from routes.report import report_bp
+from routes.token import token_bp
+from routes.razorpay_webhook import razorpay_bp
 
 # ✅ Load .env from parent directory (LLTS/.env)
 dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
