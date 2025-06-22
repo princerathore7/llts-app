@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apply for Tender</title>
+  <link rel="stylesheet" href="apply.css" />
+</head>
+<body>
+  <div class="overlay">
+    <div class="popup">
+      <button class="close-btn" onclick="window.history.back()">×</button>
+      <h2>📝 Apply for Tender</h2>
+      <form id="applyForm">
+        <label for="fullName">👤 Full Name</label>
+        <input type="text" id="fullName" name="fullName" placeholder="Your full name" required />
+
+        <label for="mobile">📱 Mobile Number</label>
+        <input type="tel" id="mobile" name="mobile" placeholder="e.g. 9876543210" required />
+
+        <label for="amount">💰 Expected Amount (₹)</label>
+        <input type="number" id="amount" name="amount" placeholder="Enter your quote" required />
+
+        <label for="message">🗒️ Why should we choose you?</label>
+        <textarea id="message" name="message" rows="4" placeholder="Briefly explain your suitability..." required></textarea>
+
+        <button type="submit" id="apply-btn" class="submit-btn">🚀 Submit Application</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function parseJwt(token) {
+      try {
+        return JSON.parse(atob(token.split('.')[1]));
+      } catch (e) {
+        return null;
+      }
+    }
+
+    document.getElementById('applyForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const tenderId = localStorage.getItem("selectedTenderId");
+      if (!tenderId) {
+        alert("Tender ID not found.");
+        return;
+      }
+
+      const fullName = document.getElementById('fullName').value.trim();
+      const mobile = document.getElementById('mobile').value.trim();
+      const amount = parseFloat(document.getElementById('amount').value.trim());
+      const message = document.getElementById('message').value.trim();
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("You must be logged in.");
+        return;
+      }
+
+      const payload = parseJwt(token);
+      const workerId = payload?.sub;
+
+      if (!workerId) {
+        alert("Invalid or expired token.");
+        return;
+      }
+
+      const btn = document.getElementById("apply-btn");
+      btn.disabled = true;
+      btn.textContent = "Submitting...";
+
+      try {
+        const res = await fetch("https://llts-app.onrender.com/api/worker/apply-tender", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            tender_id: tenderId,
+            worker_name: fullName,
+            contact: mobile,
+            quoted_price: amount,
+            message: message,
+          }),
+        });
+
+        const data = await res.json();
+
+        if (res.status === 409) {
+          alert("⚠️ You have already applied to this tender.");
+          return;
+        }
+
+        if (res.ok) {
+          localStorage.removeItem("selectedTenderId");
+
+          // ✅ Redirect to success.html
+          window.location.href = "success.html";
+        } else {
+          alert(data.message || "Failed to submit application.");
+        }
+      } catch (err) {
+        console.error("Application error:", err);
+        alert("Something went wrong while applying!");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "🚀 Submit Application";
+      }
+    });
+  </script>
+</body>
+</html>

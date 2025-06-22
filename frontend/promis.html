@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LLTS Promise Documents</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 50px;
+      background: #f9f9f9;
+    }
+    h1 {
+      margin-bottom: 10px;
+      color: #222;
+    }
+    h2 {
+      color: #444;
+      margin-top: 40px;
+    }
+    p {
+      color: #555;
+      margin-bottom: 30px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    .pdf-btn {
+      padding: 12px 24px;
+      margin: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+    }
+    .hindi { background-color: #e53935; }
+    .english { background-color: #3949ab; }
+    .pdf-btn:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📜 LLTS शपथ पत्र / Promise Document</h1>
+
+  <h2>🔸 Why This Document is Important (English)</h2>
+  <p>
+    To ensure trust, professionalism, and legal clarity between Owners and Workers, LLTS provides this official document. 
+    It acts as a declaration and mutual agreement regarding the tendered work. Both parties are encouraged to print it,
+    fill required details, and sign it as a proof of agreement for future reference.note - if hindi pdff if undownloadable you can translate
+    that by  google and mak
+  </p>
+
+  <h2>🔸 यह दस्तावेज़ क्यों आवश्यक है (हिंदी)</h2>
+  <p>
+    (Owner) और  (Worker) के बीच विश्वास, ईमानदारी और वैध समझौते को सुनिश्चित करने के लिए LLTS यह आधिकारिक दस्तावेज़ प्रदान करता है। 
+    यह शपथ पत्र कार्य के लिए एक वचनबद्धता और सहमति पत्र के रूप में कार्य करता है। कृपया इसे डाउनलोड कर प्रिंट करें, 
+    आवश्यक विवरण भरें और दोनों पक्षों द्वारा हस्ताक्षरित करें ताकि भविष्य में कोई विवाद न हो।
+  </p>
+
+  <button class="pdf-btn hindi" onclick="downloadPDF('hindi')">📥 हिंदी शपथ पत्र डाउनलोड करें</button>
+  <button class="pdf-btn english" onclick="downloadPDF('english')">📥 Download English Promise Notice</button>
+
+  <script>
+    function downloadPDF(lang) {
+      const link = document.createElement("a");
+      if (lang === 'hindi') {
+        link.href = "pdfs/shapath_hindi.pdf";  // Put correct path here
+        link.download = "LLTS_ShapathPatra_Hindi.pdf";
+      } else {
+        link.href = "pdfs/promise_english.pdf"; // Put correct path here
+        link.download = "LLTS_Promise_Notice_English.pdf";
+      }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+
+</body>
+</html>

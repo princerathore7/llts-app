@@ -1,0 +1,281 @@
+ <!--  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Post Auction | LLTS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to bottom right, #232526, #414345);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 16px;
+      color: #fff;
+    }
+
+    .container {
+      max-width: 540px;
+      width: 100%;
+      background-color: #2f2f3f;
+      padding: 40px;
+      border-radius: 18px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    h1 {
+      text-align: center;
+      color: #f39c12;
+      font-size: 30px;
+      font-weight: 700;
+      margin-bottom: 28px;
+      letter-spacing: 1px;
+    }
+
+    label {
+      font-weight: 500;
+      font-size: 15px;
+      display: block;
+      margin: 14px 0 6px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid #444458;
+      background: #3a3a50;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: #f39c12;
+      outline: none;
+      box-shadow: 0 0 6px #f39c1290;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .btn-submit {
+      margin-top: 26px;
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(to right, #f39c12, #e67e22);
+      color: #1e1e1e;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+    }
+
+    .note {
+      font-size: 13px;
+      color: #bbb;
+      text-align: center;
+      margin-top: 14px;
+      font-style: italic;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #ccc;
+      text-decoration: underline;
+    }
+
+    .back-link:hover {
+      color: #f39c12;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📢 Post Auction</h1>
+    <form id="postAuctionForm">
+      <label for="auctionTitle">Auction Title</label>
+      <input type="text" id="auctionTitle" name="auctionTitle" placeholder="Enter auction title" required />
+
+      <label for="workDescription">Work Description</label>
+      <textarea id="workDescription" name="workDescription" placeholder="Explain the task..." required></textarea>
+
+      <label for="startingPrice">Starting Price (₹)</label>
+      <input type="number" id="startingPrice" name="startingPrice" placeholder="Enter minimum price" min="0" required />
+
+      <label for="auctionDuration">Auction Duration (days)</label>
+      <input type="number" id="auctionDuration" name="auctionDuration" placeholder="Max 30 days" min="1" max="30" required />
+
+      <label for="category">Work Category</label>
+      <select id="category" name="category" required>
+        <option value="">-- Select Category --</option>
+        <option value="Electrician">Electrician</option>
+        <option value="Plumbing">Plumbing</option>
+        <option value="Carpentry">Carpentry</option>
+        <option value="Masonry">Masonry</option>
+        <option value="Gardening">Gardening</option>
+        <option value="Cleaning">Cleaning</option>
+        <option value="Painting">Painting</option>
+        <option value="Student Work">Student Work</option>
+      </select>
+
+      <button type="submit" class="btn-submit">Submit Auction</button>
+    </form>
+    <p class="note">Note: Workers will bid on this auction. Duration can be a maximum of 30 days.</p>
+    <a href="ownerdashboard.html" class="back-link">← Back to Dashboard</a>
+  </div>
+<script> 
+const API_BASE = "http://localhost:5000/api";
+
+  document.getElementById('postAuctionForm')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert("You're not logged in.");
+      return;
+    }
+
+    const payload = parseJwt(token);
+    const userId = payload?.id;
+    if (!userId) {
+      alert("User ID not found in token.");
+      return;
+    }
+
+    const durationDays = parseInt(document.getElementById('auctionDuration').value || "3");
+    const endDate = new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+    const auction = {
+      title: document.getElementById('auctionTitle').value,
+      item_name: document.getElementById('auctionTitle').value,
+      description: document.getElementById('workDescription').value,
+      starting_bid: parseInt(document.getElementById('startingPrice').value),
+      base_price: parseInt(document.getElementById('startingPrice').value),
+      location: "Default Location",  // Optional input later
+      condition: "Good",  // Add dropdown if you want dynamic condition
+      end_date: endDate,
+      category: document.getElementById('category').value,
+      created_by: userId
+    };
+
+    try {
+      const res = await fetch(`${API_BASE}/post-auction`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(auction)
+      });
+
+      const result = await res.json();
+      alert(result.message || "Auction posted.");
+      if (res.ok) this.reset();
+    } catch (error) {
+      console.error("Auction Post Error:", error);
+      alert("Something went wrong while posting the auction.");
+    }
+  });
+</script>
+</body>
+</html>-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🔨 Auction Coming Soon</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #f9f9f9, #e0e0e0);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .logo {
+      font-size: 42px;
+      font-weight: bold;
+      color: #ff9900;
+      animation: pulse 2s infinite;
+      margin-bottom: 20px;
+    }
+
+    .hammer {
+      font-size: 60px;
+      animation: bounce 1.5s infinite;
+    }
+
+    .message {
+      font-size: 20px;
+      color: #333;
+      text-align: center;
+      max-width: 500px;
+      margin: 20px;
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 16px;
+      color: #666;
+    }
+
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-12px);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.6;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hammer">🔨</div>
+
+  <div class="logo">COMING SOON</div>
+
+  <div class="message">
+    <strong>The "Boli" and Auction feature</strong> will be implemented in future updates.<br/>
+    Keep supporting <strong>S&P Developments</strong> as we continue to grow!
+  </div>
+
+  <div class="footer">© 2025 LLTS | Powered by S&P Developments</div>
+
+</body>
+</html>

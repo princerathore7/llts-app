@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Post Tender | LLTS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to bottom right, #141e30, #243b55);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 16px;
+      color: #fff;
+    }
+
+    .container {
+      max-width: 640px;
+      width: 100%;
+      background-color: #1f2a40;
+      padding: 40px;
+      border-radius: 18px;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    h1 {
+      text-align: center;
+      color: #2ecc71;
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 30px;
+    }
+
+    label {
+      font-weight: 500;
+      font-size: 15px;
+      display: block;
+      margin: 14px 0 6px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid #444;
+      background: #2c3e50;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: #2ecc71;
+      outline: none;
+      box-shadow: 0 0 6px #2ecc7190;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .btn-submit {
+      margin-top: 26px;
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(to right, #2ecc71, #27ae60);
+      color: #1e1e1e;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .btn-submit:hover {
+      transform: scale(1.02);
+    }
+
+    .note {
+      font-size: 13px;
+      color: #ccc;
+      text-align: center;
+      margin-top: 14px;
+      font-style: italic;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #ccc;
+      text-decoration: underline;
+    }
+
+    .back-link:hover {
+      color: #2ecc71;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📄 Post a Tender</h1>
+    <form id="postTenderForm">
+      <label for="tenderTitle">Tender Title</label>
+      <input type="text" id="tenderTitle" placeholder="Enter tender title" required />
+
+      <label for="tenderDescription">Work Description</label>
+      <textarea id="tenderDescription" placeholder="Explain the work in detail..." required></textarea>
+
+      <label for="price">Offered Price (₹)</label>
+      <input type="number" id="price" placeholder="Enter offered price" min="0" required />
+
+      <label for="location">Location</label>
+      <input type="text" id="location" placeholder="e.g. Indore, MP" required />
+
+      <label for="deadline">Deadline</label>
+      <input type="date" id="deadline" required />
+
+      <label for="category">Work Category</label>
+      <select id="category" required>
+        <option value="">-- Select Category --</option>
+        <option value="All Categories">All Categories</option>
+        <option value="Electrician">Electrician</option>
+        <option value="Plumbing">Plumbing</option>
+        <option value="Carpentry">Carpentry</option>
+        <option value="Masonry">Masonry</option>
+        <option value="Gardening">Gardening</option>
+        <option value="Cleaning">Cleaning</option>
+        <option value="Painting">Painting</option>
+        <option value="Student Work">Student Work</option>
+        <option value="IT Support">IT Support</option>
+        <option value="Mechanic">Mechanic</option>
+        <option value="General Help">General Help</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <button type="submit" class="btn-submit">Submit Tender</button>
+    </form>
+
+    <p class="note">Note: This tender will be visible to workers matching the selected category.</p>
+    <a href="ownerdashboard.html" class="back-link">← Back to Dashboard</a>
+  </div>
+
+  <script>
+  const API_BASE = "https://llts-app.onrender.com/api";
+
+  document.getElementById('postTenderForm')?.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert("You're not logged in.");
+      return;
+    }
+
+    const tender = {
+      title: document.getElementById('tenderTitle').value.trim(),
+      description: document.getElementById('tenderDescription').value.trim(),
+      budget: parseInt(document.getElementById('price').value),
+      location: document.getElementById('location').value.trim(),
+      deadline: document.getElementById('deadline').value,
+      category: document.getElementById('category').value
+    };
+
+    // Basic field validation
+    for (let key in tender) {
+      if (!tender[key]) {
+        alert(`Please fill in the ${key} field.`);
+        return;
+      }
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/tenders`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(tender)
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        alert(result.message || "Tender posted successfully.");
+        this.reset();
+      } else {
+        alert(result.error || "Failed to post tender.");
+      }
+    } catch (error) {
+      console.error("Tender Post Error:", error);
+      alert("Something went wrong while posting the tender.");
+    }
+  });
+
+  function parseJwt(token) {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
+    } catch (e) {
+      return null;
+    }
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Update Profile</title>
+  <style>
+    :root {
+      --primary: #0f3460;
+      --secondary: #16213e;
+      --accent: #00c897;
+      --bg-light: #f5f9ff;
+      --text-light: #f0f0f0;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-light);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .bubbles {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .bubble {
+      position: absolute;
+      background-color: rgba(0, 200, 150, 0.15);
+      border-radius: 50%;
+      animation: float 20s linear infinite;
+    }
+
+    .bubble:nth-child(1) {
+      width: 150px;
+      height: 150px;
+      left: 10%;
+      animation-delay: 0s;
+    }
+
+    .bubble:nth-child(2) {
+      width: 100px;
+      height: 100px;
+      left: 70%;
+      animation-delay: 3s;
+    }
+
+    .bubble:nth-child(3) {
+      width: 200px;
+      height: 200px;
+      left: 40%;
+      animation-delay: 5s;
+    }
+
+    @keyframes float {
+      0% {
+        bottom: -200px;
+        transform: translateX(0) rotate(0deg);
+      }
+      100% {
+        bottom: 110%;
+        transform: translateX(50px) rotate(360deg);
+      }
+    }
+
+    .container {
+      max-width: 480px;
+      margin: 4rem auto;
+      background: white;
+      padding: 2rem 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.08);
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 1.2rem;
+      font-weight: 600;
+      color: var(--secondary);
+    }
+
+    input, textarea {
+      width: 100%;
+      margin-top: 0.5rem;
+      padding: 0.75rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      transition: 0.2s ease;
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--accent);
+      outline: none;
+      box-shadow: 0 0 5px rgba(0, 200, 150, 0.3);
+    }
+
+    button {
+      margin-top: 2rem;
+      width: 100%;
+      background: var(--accent);
+      color: white;
+      border: none;
+      font-size: 1rem;
+      padding: 0.8rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      background: #00a67e;
+    }
+
+    @media (max-width: 540px) {
+      .container {
+        margin: 2rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bubbles">
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+  </div>
+
+  <div class="container">
+    <h2>👤 Update Your Profile</h2>
+    <form id="profileForm">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" required />
+
+      <label for="email">Email</label>
+      <input type="email" id="email" required />
+
+      <label for="location">Location</label>
+      <input type="text" id="location" />
+
+      <label for="experience">Experience (years)</label>
+      <input type="number" id="experience" min="0" />
+
+      <label for="skills">Skills (comma-separated)</label>
+      <textarea id="skills" rows="2" placeholder="e.g., Painting, Plumbing"></textarea>
+
+      <button type="submit">💾 Save Changes</button>
+    </form>
+  </div>
+
+  <script>
+    const API = "https://llts-app.onrender.com/api";
+
+    function parseJwt(token) {
+      try {
+        return JSON.parse(atob(token.split('.')[1]));
+      } catch {
+        return null;
+      }
+    }
+
+    function redirectToLogin() {
+      alert("Please login first.");
+      window.location.href = "worker login.html";
+    }
+
+    async function loadProfile() {
+      const token = localStorage.getItem("token");
+      if (!token) return redirectToLogin();
+
+      const res = await fetch(`${API}/worker/profile`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) return redirectToLogin();
+
+      const user = await res.json();
+      document.getElementById("name").value = user.name || '';
+      document.getElementById("email").value = user.email || '';
+      document.getElementById("location").value = user.location || '';
+      document.getElementById("experience").value = user.experience || 0;
+      document.getElementById("skills").value = (user.skills || []).join(", ");
+    }
+
+    document.getElementById("profileForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const token = localStorage.getItem("token");
+      if (!token) return redirectToLogin();
+
+      const body = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        location: document.getElementById("location").value,
+        experience: parseInt(document.getElementById("experience").value),
+        skills: document.getElementById("skills").value.split(",").map(s => s.trim())
+      };
+
+      const res = await fetch(`${API}/worker/profile`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(body)
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("✅ Profile updated successfully!");
+        window.location.href = "worker dashboard.html";
+      } else {
+        alert("❌ Update failed: " + (data.error || data.msg || "Unknown error"));
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", loadProfile);
+  </script>
+</body>
+</html>

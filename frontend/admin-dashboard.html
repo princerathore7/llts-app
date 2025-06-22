@@ -1,0 +1,430 @@
+<!-- ✅ This is your original code + Gift Tokens section added -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LLTS Admin Dashboard 👨‍💻</title>
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/295/295128.png" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Share Tech Mono', monospace;
+      background-color: #000;
+      color: #00ff00;
+      padding: 0;
+    }
+    header {
+      padding: 30px;
+      text-align: center;
+      background-color: #0d0d0d;
+      border-bottom: 1px solid #00ff00;
+      box-shadow: 0 0 20px #00ff00;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      margin: 0;
+      color: #00ff00;
+    }
+    header p {
+      font-size: 1rem;
+      margin-top: 10px;
+      color: #39ff14;
+    }
+    .search-container {
+      padding: 30px;
+      text-align: center;
+    }
+    .search-container input {
+      padding: 12px;
+      width: 340px;
+      font-size: 18px;
+      background-color: black;
+      color: #00ff00;
+      border: 2px solid #00ff00;
+      outline: none;
+      border-radius: 4px;
+      transition: all 0.3s ease-in-out;
+    }
+    .search-container input:focus {
+      box-shadow: 0 0 10px #00ff00;
+    }
+    .admin-tools {
+      display: none;
+      padding: 30px;
+    }
+    .admin-tools h2 {
+      font-size: 2rem;
+      color: #00ff00;
+      margin-bottom: 20px;
+      border-bottom: 2px dashed #00ff00;
+      padding-bottom: 10px;
+    }
+    .admin-section {
+      margin-bottom: 40px;
+      padding: 20px;
+      background-color: #0f0f0f;
+      border: 1px solid #00ff00;
+      box-shadow: 0 0 10px #00ff00;
+    }
+    .admin-section h3 {
+      font-size: 1.5rem;
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: #39ff14;
+    }
+    .admin-section button {
+      padding: 12px 18px;
+      margin: 8px 5px;
+      font-family: inherit;
+      font-size: 15px;
+      color: #000;
+      background-color: #39ff14;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+    .admin-section button:hover {
+      background-color: #00ff00;
+      box-shadow: 0 0 10px #39ff14;
+    }
+    .footer-note {
+      text-align: center;
+      color: #555;
+      margin-top: 40px;
+      font-size: 0.9rem;
+    }
+    .card {
+      border: 1px solid #00ff00;
+      padding: 10px;
+      margin-bottom: 12px;
+      background-color: #0a0a0a;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>⚙️ LLTS Admin Dashboard</h1>
+    <p>Enter access code below to activate admin controls</p>
+  </header>
+
+  <div class="search-container">
+    <input id="adminCodeInput" placeholder="🔐 Enter Admin Access Code" oninput="checkAdminCode()" />
+  </div>
+
+  <div class="admin-tools" id="adminTools">
+    <!-- 🎁 Gift Tokens Section -->
+    <div class="admin-section">
+      <h2>🎁 Gift Tokens</h2>
+      <input type="text" id="gift-identifier" placeholder="Enter username or email" style="padding: 10px; width: 60%; margin-bottom: 12px;" />
+      <input type="number" id="gift-amount" placeholder="Enter number of tokens" style="padding: 10px; width: 60%; margin-bottom: 12px;" />
+      <button onclick="giftTokens()">Gift Tokens</button>
+      <div id="gift-message" style="margin-top: 12px; font-weight: bold;"></div>
+    </div>
+
+    <!-- Existing Sections -->
+    <div class="admin-section">
+      <h2>👥 All Users</h2>
+      <input type="text" id="searchUserInput" placeholder="🔍 Search user by ID" oninput="searchUserById()" style="padding: 10px; width: 60%; margin-bottom: 12px;" />
+      <p><strong>Total Users:</strong> <span id="user-count">0</span></p>
+      <div id="user-list">Loading...</div>
+      <button id="seeMoreBtn" onclick="showAllUsers()" style="display: none; margin-top: 10px;">🔽 See More</button>
+    </div>
+
+    <div class="admin-section">
+      <h2>📋 All Tenders</h2>
+      <div id="tender-list">Loading...</div>
+      <button id="seeMoreTendersBtn" onclick="showAllTenders()" style="display: none; margin-top: 10px;">🔽 See More</button>
+    </div>
+
+    <div class="admin-section">
+      <h2>🔨 All Auctions</h2>
+      <div id="auction-list">Loading...</div>
+      <button id="seeMoreAuctionsBtn" onclick="showAllAuctions()" style="display: none; margin-top: 10px;">🔽 See More</button>
+    </div>
+  </div>
+
+  <div class="footer-note">© 2025 LLTS - Admin Mode Activated</div>
+
+<script>
+  const API_BASE = "https://llts-app.onrender.com/api";
+
+  const ADMIN_CODE = "prince242$";
+  let allUsers = [];
+  let allTenders = [];
+  let allAuctions = [];
+
+  function checkAdminCode() {
+    const input = document.getElementById("adminCodeInput").value.trim();
+    if (input === ADMIN_CODE) {
+      document.getElementById("adminTools").style.display = "block";
+      document.querySelector(".search-container").style.display = "none";
+      loadAdminData();
+    }
+  }
+
+  async function loadAdminData() {
+    fetchAndRender('admin/all-users', 'user-list', 'user');
+    fetchAndRender('admin/all-tenders', 'tender-list', 'tender');
+    fetchAndRender('admin/all-auctions', 'auction-list', 'auction');
+  }
+
+  async function fetchAndRender(endpoint, targetId, type) {
+    try {
+      const res = await fetch(`${API_BASE}/${endpoint}`);
+      const data = await res.json();
+
+      if (type === 'user') {
+        allUsers = data.users || [];
+        document.getElementById("user-count").textContent = allUsers.length;
+        renderUsers(allUsers);
+        return;
+      }
+
+      if (type === 'tender') {
+        allTenders = data.tenders || [];
+        renderTenders(allTenders);
+        return;
+      }
+
+      if (type === 'auction') {
+        allAuctions = data.auctions || [];
+        renderAuctions(allAuctions);
+        return;
+      }
+
+    } catch (err) {
+      console.error(`❌ Failed to load ${type}:`, err);
+    }
+  }
+
+  function renderUsers(users) {
+    const container = document.getElementById('user-list');
+    container.innerHTML = '';
+    const seeMoreBtn = document.getElementById('seeMoreBtn');
+
+    users.forEach((item, index) => {
+      const card = createCard(item, 'user');
+      if (index > 0) card.style.display = 'none';
+      container.appendChild(card);
+    });
+
+    seeMoreBtn.style.display = users.length > 1 ? 'inline-block' : 'none';
+  }
+
+  function renderTenders(tenders) {
+    const container = document.getElementById('tender-list');
+    container.innerHTML = '';
+    const seeMoreBtn = document.getElementById('seeMoreTendersBtn');
+
+    tenders.forEach((item, index) => {
+      const card = createCard(item, 'tender');
+      if (index > 0) card.style.display = 'none';
+      container.appendChild(card);
+    });
+
+    seeMoreBtn.style.display = tenders.length > 1 ? 'inline-block' : 'none';
+  }
+
+  function renderAuctions(auctions) {
+    const container = document.getElementById('auction-list');
+    container.innerHTML = '';
+    const seeMoreBtn = document.getElementById('seeMoreAuctionsBtn');
+
+    auctions.forEach((item, index) => {
+      const card = createCard(item, 'auction');
+      if (index > 0) card.style.display = 'none';
+      container.appendChild(card);
+    });
+
+    seeMoreBtn.style.display = auctions.length > 1 ? 'inline-block' : 'none';
+  }
+
+  function showAllUsers() {
+    const container = document.getElementById('user-list');
+    const children = container.children;
+    for (let i = 0; i < children.length; i++) {
+      children[i].style.display = 'block';
+    }
+    document.getElementById('seeMoreBtn').style.display = 'none';
+  }
+
+  function showAllTenders() {
+    const container = document.getElementById('tender-list');
+    const children = container.children;
+    for (let i = 0; i < children.length; i++) {
+      children[i].style.display = 'block';
+    }
+    document.getElementById('seeMoreTendersBtn').style.display = 'none';
+  }
+
+  function showAllAuctions() {
+    const container = document.getElementById('auction-list');
+    const children = container.children;
+    for (let i = 0; i < children.length; i++) {
+      children[i].style.display = 'block';
+    }
+    document.getElementById('seeMoreAuctionsBtn').style.display = 'none';
+  }
+
+  function searchUserById() {
+    const query = document.getElementById("searchUserInput").value.trim().toLowerCase();
+    if (!query) {
+      renderUsers(allUsers);
+      return;
+    }
+
+    const found = allUsers.filter(u => u._id.toLowerCase().includes(query));
+    if (found.length === 0) {
+      document.getElementById('user-list').innerHTML = `<p style="color: red;">❌ No user found with ID: ${query}</p>`;
+      document.getElementById('seeMoreBtn').style.display = 'none';
+    } else {
+      renderUsers(found);
+    }
+  }
+
+  function createCard(item, type) {
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    let content = '';
+    if (type === 'user') {
+      content = `
+        <p><strong>Name:</strong> ${item.name || item.username}</p>
+        <p><strong>Role:</strong> ${item.role}</p>
+        <p><strong>Status:</strong> ${item.status || 'active'}</p>
+        <button onclick="toggleUser('${item._id}')">
+          ${item.status === 'disabled' ? '✅ Enable' : '❌ Disable'}
+        </button>
+      `;
+    } else if (type === 'tender') {
+      content = `
+        <p><strong>Title:</strong> ${item.title}</p>
+        <p><strong>Budget:</strong> ₹${item.budget}</p>
+        <p><strong>Status:</strong> ${item.status || 'active'}</p>
+        <button onclick="toggleTender('${item._id}')">
+          ${item.status === 'disabled' ? '✅ Enable' : '❌ Disable'}
+        </button>
+        <button onclick="deleteTenderByAdmin('${item._id}')">🗑 Delete</button>
+      `;
+    } else if (type === 'auction') {
+      content = `
+        <p><strong>Title:</strong> ${item.title}</p>
+        <p><strong>Item:</strong> ${item.item_name || 'N/A'}</p>
+        <p><strong>Status:</strong> ${item.status || 'active'}</p>
+        <button onclick="toggleAuction('${item._id}')">
+          ${item.status === 'disabled' ? '✅ Enable' : '❌ Disable'}
+        </button>
+      `;
+    }
+
+    card.innerHTML = content;
+    return card;
+  }
+
+  async function toggleUser(userId) {
+    try {
+      await fetch(`${API_BASE}/admin/user-status/${userId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'toggle' })
+      });
+      fetchAndRender('admin/all-users', 'user-list', 'user');
+    } catch (e) {
+      console.error("Failed to toggle user:", e);
+    }
+  }
+
+  async function toggleTender(tenderId) {
+    try {
+      await fetch(`${API_BASE}/admin/tender-status/${tenderId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'toggle' })
+      });
+      fetchAndRender('admin/all-tenders', 'tender-list', 'tender');
+    } catch (e) {
+      console.error("Failed to toggle tender:", e);
+    }
+  }
+
+  async function toggleAuction(auctionId) {
+    try {
+      await fetch(`${API_BASE}/admin/auction-status/${auctionId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'toggle' })
+      });
+      fetchAndRender('admin/all-auctions', 'auction-list', 'auction');
+    } catch (e) {
+      console.error("Failed to toggle auction:", e);
+    }
+  }
+
+  async function deleteTenderByAdmin(tenderId) {
+    const confirmDelete = confirm("⚠️ Are you sure you want to delete this tender? This action cannot be undone.");
+    if (!confirmDelete) return;
+
+    try {
+      const res = await fetch(`${API_BASE}/admin/delete-tender/${tenderId}`, {
+        method: 'DELETE'
+      });
+      const result = await res.json();
+      alert(result.message || "Tender deleted.");
+      fetchAndRender('admin/all-tenders', 'tender-list', 'tender');
+    } catch (err) {
+      console.error("❌ Admin tender delete failed:", err);
+      alert("Something went wrong while deleting.");
+    }
+  }
+
+  async function giftTokens() {
+    const identifier = document.getElementById("gift-identifier").value.trim();
+    const amount = parseInt(document.getElementById("gift-amount").value.trim());
+    const msgBox = document.getElementById("gift-message");
+
+    msgBox.innerText = "";
+    msgBox.style.color = "#00ff00";
+
+    if (!identifier || isNaN(amount) || amount <= 0) {
+      msgBox.innerText = "❌ Enter valid username/email and amount.";
+      msgBox.style.color = "red";
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      msgBox.innerText = "❌ Admin not authenticated. Please login.";
+      msgBox.style.color = "red";
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/admin/grant-tokens`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ identifier, amount })
+      });
+
+      const result = await res.json();
+      if (res.ok && result.message) {
+        msgBox.innerText = `✅ ${result.message}`;
+        msgBox.style.color = "#00ff00";
+      } else {
+        msgBox.innerText = `❌ ${result.message || result.error || 'Something went wrong'}`;
+        msgBox.style.color = "red";
+      }
+    } catch (err) {
+      msgBox.innerText = "❌ Server error.";
+      msgBox.style.color = "red";
+    }
+  }
+</script>
+
+</body>
+</html>

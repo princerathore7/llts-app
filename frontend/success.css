@@ -1,0 +1,82 @@
+/* success.css */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.success-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.success-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 40px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+}
+
+.checkmark {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+}
+
+.checkmark-circle {
+  stroke: #00ffcc;
+  stroke-width: 4;
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  animation: dash 0.6s ease-out forwards;
+}
+
+.checkmark-check {
+  stroke: #00ffcc;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: dash-check 0.4s 0.6s ease-out forwards;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes dash-check {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+h2 {
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+#success-message {
+  font-size: 1.1rem;
+  margin: 15px 0;
+}
+
+.redirecting {
+  margin-top: 10px;
+  font-size: 0.95rem;
+  color: #cccccc;
+}

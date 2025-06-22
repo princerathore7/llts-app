@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Success</title>
+  <link rel="stylesheet" href="success.css" />
+</head>
+<body>
+  <div class="success-container">
+    <div class="success-card">
+      <div class="checkmark">
+        <svg viewBox="0 0 52 52">
+          <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+          <path class="checkmark-check" fill="none" d="M14 27l7 7 16-16"/>
+        </svg>
+      </div>
+      <h2>🎉 You're In!</h2>
+      <p id="success-message">Your application was submitted successfully.<br/>The owner will contact you if selected.</p>
+      <p class="redirecting">🚀 Redirecting to your dashboard...</p>
+    </div>
+  </div>
+
+  <!-- Redirect after 3 seconds -->
+  <script>
+    setTimeout(() => {
+      window.location.href = "worker-dashboard.html";
+    }, 3000);
+  </script>
+</body>
+</html>

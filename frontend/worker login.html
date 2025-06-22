@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Worker Login - LLTS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Orbitron', sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
+      position: relative;
+    }
+
+    /* ========== Animated Background Bubbles ========== */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://www.transparenttextures.com/patterns/cubes.png');
+      opacity: 0.02;
+      animation: moveBackground 30s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes moveBackground {
+      0% { background-position: 0 0; }
+      100% { background-position: 1000px 1000px; }
+    }
+
+    /* ========== Login Card ========== */
+    .login-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(14px);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 40px 30px;
+      width: 350px;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+      color: #fff;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .login-container h2 {
+      font-size: 2.2rem;
+      color: gold;
+      margin-bottom: 20px;
+    }
+
+    .badge {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      color: #ffcc00;
+      text-shadow: 1px 1px 10px #ffcc00aa;
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 12px 0;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1px solid #aaa;
+      background-color: rgba(255, 255, 255, 0.08);
+      color: white;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: gold;
+      box-shadow: 0 0 8px gold;
+      background-color: rgba(255, 255, 255, 0.12);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      background: gold;
+      color: black;
+      font-weight: bold;
+      border: none;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s ease;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+    }
+
+    button:hover {
+      background: #e6c200;
+      box-shadow: 0 0 15px rgba(255, 255, 0, 0.6);
+    }
+
+    .error {
+      margin-top: 15px;
+      color: #ff4d4d;
+      font-size: 0.9rem;
+    }
+
+    .footer {
+      margin-top: 25px;
+      font-size: 0.75rem;
+      color: #bbb;
+    }
+
+    .footer small {
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="badge">🛠️</div>
+    <h2>Worker Login</h2>
+    <form id="loginForm">
+      <input type="text" id="username" placeholder="Username or Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+    <div id="errorMessage" class="error"></div>
+    <div class="footer">
+      LOCAL LIVELIHOOD TENDER SYSTEM<br />
+      <small>Powered by Prince Sanj. Kumar Rathore</small>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = 'https://llts-app.onrender.com/api';
+
+    function parseJwt(token) {
+      try {
+        return JSON.parse(atob(token.split('.')[1]));
+      } catch (e) {
+        console.error("JWT parsing failed:", e);
+        return null;
+      }
+    }
+
+    document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById('username')?.value.trim();
+      const password = document.getElementById('password')?.value;
+      const errorBox = document.getElementById('errorMessage');
+      errorBox.textContent = '';
+
+      if (!username || !password) {
+        errorBox.textContent = 'Please enter username and password.';
+        return;
+      }
+
+      try {
+const response = await fetch(`${API_BASE}/worker/login`, {
+
+  
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.token) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('role', data.role);
+          localStorage.setItem('username', username);
+
+          const role = (data.role || '').toLowerCase();
+          if (role === 'worker') {
+            window.location.href = 'worker-dashboard.html';
+          } else if (role === 'owner') {
+            window.location.href = 'ownerDashboard.html';
+          } else {
+            errorBox.textContent = 'Login successful but unknown role.';
+          }
+        } else {
+          errorBox.textContent = data.error || data.message || 'Invalid credentials.';
+        }
+
+      } catch (err) {
+        console.error("Login error:", err);
+        errorBox.textContent = 'Server error during login.';
+      }
+    });
+  </script>
+</body>
+</html>

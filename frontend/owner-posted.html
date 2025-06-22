@@ -1,0 +1,90 @@
+<!-- owner-tenders.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Owner's Posted Tenders</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="lltsstyle.css" />
+</head>
+<body>
+  <header>
+    <h1>📋 Your Posted Tenders</h1>
+  </header>
+
+  <div class="section">
+    <div id="ownerTenderList" class="card-grid">
+      <!-- Owner Tenders will be displayed here -->
+    </div>
+  </div>
+
+  <script src="lltsscript.js"></script>
+  <script>
+    async function fetchOwnerTenders() {
+      const token = localStorage.getItem("token");
+      if (!token) return alert("Not logged in");
+
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      const ownerId = payload.user_id || payload.id;
+
+      try {
+        const res = await fetch("http://localhost:5000/api/get-tenders", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        const ownerTenders = data.tenders.filter(t => t.owner_id === ownerId);
+
+        const tenderList = document.getElementById("ownerTenderList");
+        tenderList.innerHTML = "";
+
+        if (ownerTenders.length === 0) {
+          tenderList.innerHTML = "<p>No tenders posted yet.</p>";
+          return;
+        }
+
+        ownerTenders.forEach(t => {
+          tenderList.innerHTML += `
+            <div class="card">
+              <h3>${t.title}</h3>
+              <p><strong>Category:</strong> ${t.category}</p>
+              <p><strong>Budget:</strong> ₹${t.budget}</p>
+              <p><strong>Location:</strong> ${t.location}</p>
+              <p><strong>Deadline:</strong> ${new Date(t.deadline).toLocaleDateString()}</p>
+              <button class="btn btn-report" onclick="deleteTender('${t._id}')">🗑 Delete</button>
+            </div>
+          `;
+        });
+      } catch (err) {
+        console.error("Error fetching tenders", err);
+      }
+    }
+
+    async function deleteTender(tenderId) {
+      if (!confirm("Delete this tender permanently?")) return;
+      const token = localStorage.getItem("token");
+
+      try {
+        const res = await fetch(`https://llts-app.onrender.com/api/delete-tender/${tenderId}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        const result = await res.json();
+        if (result.message) {
+          alert("Tender deleted.");
+          fetchOwnerTenders(); // Refresh after deletion
+        } else {
+          alert(result.error || "Deletion failed");
+        }
+      } catch (err) {
+        alert("Error deleting");
+        console.error(err);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", fetchOwnerTenders);
+  </script>
+</body>
+</html>

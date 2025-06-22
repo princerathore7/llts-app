@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Report a Tender - LLTS</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #0f0;
+      padding: 30px;
+    }
+
+    h1 {
+      color: #0f0;
+    }
+
+    .instructions {
+      background: #222;
+      padding: 20px;
+      border: 1px solid #0f0;
+      margin-bottom: 30px;
+    }
+
+    button {
+      background: #0f0;
+      color: #000;
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      margin-top: 20px;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background: #39ff14;
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 13px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <h1>🚩 Report a Tender</h1>
+
+  <div class="instructions">
+    <p>Please make sure your report contains:</p>
+    <ul>
+      <li>🔹 Valid reason (e.g. fake tender, scam, abusive behavior)</li>
+      <li>🔹 Screenshots of chat (WhatsApp or app)</li>
+      <li>🔹 Mention of tender title or tender ID</li>
+      <li>🔹 Owner name or ID if possible</li>
+    </ul>
+
+    <p>Examples of reportable issues:</p>
+    <ul>
+      <li>❌ Tender created but owner doesn't respond or denies giving work</li>
+      <li>❌ Owner used offensive language</li>
+      <li>❌ Promoting illegal/nudity/inappropriate content</li>
+      <li>❌ Misleading or fake budget promises</li>
+    </ul>
+  </div>
+
+  <button id="sendReportBtn">📨 Send Report via Email</button>
+
+  <div class="footer">Note: Admin will verify every report manually within 48 hours.</div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const tenderId = params.get('tender_id') || 'N/A';
+    const reporterId = params.get('reporter_id') || 'N/A';
+
+    document.getElementById('sendReportBtn').addEventListener('click', () => {
+      const email = "lltsreportspdevelopments@gmail.com";
+      const subject = encodeURIComponent("Report: Fake Tender or Misuse on LLTS");
+      const body = encodeURIComponent(`
+Hello Admin,
+
+I would like to report a tender posted on the LLTS platform.
+
+🔹 Tender ID: ${tenderId}
+🔹 My User ID: ${reporterId}
+
+Reason:
+[Please write your complaint here - e.g. scam, no work assigned, rude behavior, fake budget]
+
+Attachments:
+(Please attach WhatsApp screenshots or any proof before sending this email)
+
+Thanks,
+[Your Name]
+      `);
+
+      const mailtoLink = `mailto:${email}?subject=${subject}&body=${body}`;
+      window.location.href = mailtoLink;
+    });
+  </script>
+</body>
+</html>
