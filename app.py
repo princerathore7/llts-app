@@ -15,11 +15,9 @@ from routes.report import report_bp
 from routes.token import token_bp
 from routes.razorpay_webhook import razorpay_bp
 
-
-# ✅ Load .env from parent directory (LLTS/.env)
+# ✅ Load .env from parent directory
 dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
 load_dotenv(dotenv_path)
-
 
 # ✅ Initialize Flask app
 app = Flask(__name__)
@@ -41,15 +39,13 @@ ALLOWED_ORIGINS = [
     "https://llts-app.onrender.com"
 ]
 
-
-# ✅ CORS Setup
+# ✅ CORS Setup (r prefix is very important!)
 CORS(app,
-     resources={"/api/*": {"origins": ALLOWED_ORIGINS}},
+     resources={r"/api/*": {"origins": ALLOWED_ORIGINS}},
      supports_credentials=True,
      allow_headers=["Content-Type", "Authorization"],
      expose_headers=["Content-Type"],
      methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"])
-
 
 # ✅ Register Blueprints
 app.register_blueprint(auth_bp, url_prefix='/api')
@@ -79,8 +75,6 @@ def expired_token_callback(jwt_header, jwt_payload):
 @app.errorhandler(404)
 def page_not_found(e):
     return jsonify({"error": "API route not found"}), 404
-
-
 
 # ✅ Start Server
 if __name__ == "__main__":
