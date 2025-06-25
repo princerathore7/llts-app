@@ -235,7 +235,7 @@ def delete_tender_safe():
     # ✅ Final Fix: Missing Received Applications Route
 # ✅ GET: Received Applications for Logged-in Owner
 @owner_bp.route('/api/owner/my-applications', methods=['GET', 'OPTIONS'])
-@cross_origin()  # use default config from app-level CORS
+@cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
 
 def get_owner_received_applications():
     if request.method == "OPTIONS":
