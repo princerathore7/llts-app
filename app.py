@@ -37,15 +37,19 @@ ALLOWED_ORIGINS = [
     "http://127.0.0.1:5500",
     "http://localhost:5500",
     "http://127.0.0.1:8000",
-    "http://localhost:8000"
+    "http://localhost:8000",
+    "https://llts-app.onrender.com"
 ]
 
+
 # ✅ CORS Setup
-CORS(app, origins=ALLOWED_ORIGINS,
+CORS(app,
+     resources={"/api/*": {"origins": ALLOWED_ORIGINS}},
      supports_credentials=True,
      allow_headers=["Content-Type", "Authorization"],
-     expose_headers="Content-Type",
+     expose_headers=["Content-Type"],
      methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"])
+
 
 # ✅ Register Blueprints
 app.register_blueprint(auth_bp, url_prefix='/api')

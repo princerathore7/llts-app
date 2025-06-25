@@ -17,7 +17,8 @@ ALLOWED_ORIGINS = [
     "http://localhost:5500",
     "http://127.0.0.1:5500",
     "http://localhost:8000",
-    "http://127.0.0.1:8000"
+    "http://127.0.0.1:8000",
+    "https://llts-app.onrender.com"  # ✅ Add this
 ]
 
 # ✅ Dummy Owner Profile
@@ -115,16 +116,20 @@ def get_owner_tenders():
         return jsonify({"status": "error", "message": "Internal server error", "details": str(e)}), 500
 
 
-# ✅ Delete Tender
 @owner_bp.route('/api/owner/delete-tender/<tender_id>', methods=['DELETE', 'OPTIONS'])
-@jwt_required()
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
+@jwt_required()
 def delete_tender(tender_id):
-    if request.method == 'OPTIONS':
-        return jsonify({}), 200
+    # ✅ Handle preflight OPTIONS request
+    if request.method == "OPTIONS":
+        print("🟡 OPTIONS request received for DELETE route.")
+        return jsonify({}), 200  # ✅ Send OK without extra headers
 
     try:
         owner_id = get_jwt_identity()
+        print("🛠️ DELETE /delete-tender called for:", tender_id)
+        print("🔑 JWT Identity:", owner_id)
+
         tender = mongo.db.tenders.find_one({"_id": ObjectId(tender_id)})
         if not tender:
             return jsonify({"status": "error", "message": "Tender not found"}), 404
@@ -135,55 +140,11 @@ def delete_tender(tender_id):
         mongo.db.tenders.delete_one({"_id": ObjectId(tender_id)})
         mongo.db.applications.delete_many({"tender_id": ObjectId(tender_id)})
 
-        return jsonify({"status": "success", "message": "Tender and related applications deleted"}), 200
+        return jsonify({"status": "success", "message": "Tender deleted successfully"}), 200
 
     except Exception as e:
         print("❌ Error in delete_tender:", str(e))
-        return jsonify({"status": "error", "message": "Internal error", "details": str(e)}), 500
-
-
-# ✅ Get Worker Applications by Owner ID
-@owner_bp.route('/api/owner/applications/<owner_id>', methods=['GET', 'OPTIONS'])
-@jwt_required()
-@cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
-def get_worker_applications(owner_id):
-    if request.method == "OPTIONS":
-        return '', 200
-
-    if get_jwt_identity() != owner_id:
-        return jsonify({"status": "error", "message": "Unauthorized"}), 401
-
-    try:
-        tenders = list(mongo.db.tenders.find({"created_by": owner_id}))
-        tender_ids = [ObjectId(t["_id"]) for t in tenders]
-        if not tender_ids:
-            return jsonify({"status": "success", "applications": []}), 200
-
-        applications = list(mongo.db.applications.find({"tender_id": {"$in": tender_ids}}))
-        enriched = []
-
-        for app in applications:
-            worker = mongo.db.users.find_one({"_id": ObjectId(app["worker_id"])})
-            tender = mongo.db.tenders.find_one({"_id": app["tender_id"]})
-            enriched.append({
-                "_id": str(app["_id"]),
-                "tender_id": str(app["tender_id"]),
-                "worker_id": str(app["worker_id"]),
-                "status": app.get("status", "pending"),
-                "applied_at": app.get("applied_at", "-"),
-                "quoted_price": app.get("quoted_price", "N/A"),
-                "message": app.get("message", "No message"),
-                "worker_name": worker.get("name") if worker else "Unknown",
-                "worker_email": worker.get("email") if worker else "N/A",
-                "contact": worker.get("contact") if worker else "",
-                "tender_title": tender.get("title") if tender else "N/A"
-            })
-
-        return jsonify({"status": "success", "applications": enriched}), 200
-
-    except Exception as e:
-        print("❌ Error in get_worker_applications:", str(e))
-        return jsonify({"status": "error", "message": "Internal server error", "details": str(e)}), 500
+        return jsonify({"status": "error", "message": "Server error", "details": str(e)}), 500
 
 
 # ✅ Accept Application
@@ -272,54 +233,52 @@ def delete_tender_safe():
         print("❌ Safe delete error:", str(e))
         return "Failed to delete tender", 500
     # ✅ Final Fix: Missing Received Applications Route
-# ✅ Final CORS-compatible route for Received Applications
 # ✅ GET: Received Applications for Logged-in Owner
-from bson import ObjectId
+@owner_bp.route('/api/owner/my-applications', methods=['GET', 'OPTIONS'])
+@cross_origin()  # use default config from app-level CORS
 
-@owner_bp.route('/received-applications', methods=['GET', 'OPTIONS'])
-@jwt_required()
-@cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
-def received_applications():
+def get_owner_received_applications():
     if request.method == "OPTIONS":
-        return jsonify({}), 200
+        print("✅ CORS Preflight Received")
+        return jsonify({ "message": "CORS preflight success" }), 200
+
+    from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
+    verify_jwt_in_request()  # ✅ Validate token manually for GET requests
+    owner_id = get_jwt_identity()
 
     try:
-        owner_id = get_jwt_identity()
-        owner_oid = ObjectId(owner_id)
+        print("🧾 Owner ID:", owner_id)
 
-        # ✅ Step 1: Find tenders by this owner
-        tenders = list(mongo.db.tenders.find({"created_by": owner_oid}))
-        tender_ids = [t["_id"] for t in tenders]  # keep ObjectId
-
-        if not tender_ids:
-            return jsonify({"status": "success", "applications": []}), 200
-
-        # ✅ Step 2: Find applications linked to those tenders
         applications = list(mongo.db.applications.find({
-            "tender_id": {"$in": tender_ids}
+            "$or": [
+                {"owner_id": str(owner_id)},
+                {"owner_id": ObjectId(owner_id)}
+            ]
         }))
 
         enriched = []
         for app in applications:
-            worker = mongo.db.users.find_one({"_id": ObjectId(app["worker_id"])})
-            tender = mongo.db.tenders.find_one({"_id": app["tender_id"]})
+            try:
+                tender = mongo.db.tenders.find_one({
+                    "_id": ObjectId(app["tender_id"])} if isinstance(app["tender_id"], str)
+                    else {"_id": app["tender_id"]}
+                )
+                worker = mongo.db.users.find_one({"_id": ObjectId(app["worker_id"])})
+                enriched.append({
+                    "_id": str(app["_id"]),
+                    "tender_title": tender.get("title", "N/A") if tender else "N/A",
+                    "quoted_price": app.get("quoted_price", "N/A"),
+                    "message": app.get("message", "No message"),
+                    "status": app.get("status", "pending"),
+                    "applied_at": app.get("applied_at", "-"),
+                    "worker_name": worker.get("name", "Unknown") if worker else "Unknown",
+                    "worker_contact": worker.get("contact", "N/A") if worker else "N/A"
+                })
+            except Exception as e:
+                print("⚠️ Skipping application due to error:", e)
 
-            enriched.append({
-                "_id": str(app["_id"]),
-                "tender_id": str(app["tender_id"]),
-                "worker_id": str(app["worker_id"]),
-                "status": app.get("status", "pending"),
-                "applied_at": app.get("applied_at", "-"),
-                "quoted_price": app.get("quoted_price", "N/A"),
-                "message": app.get("message", "No message"),
-                "worker_name": worker.get("name") if worker else "Unknown",
-                "worker_email": worker.get("email") if worker else "N/A",
-                "contact": worker.get("contact") if worker else "N/A",
-                "tender_title": tender.get("title") if tender else "N/A"
-            })
-
-        return jsonify({"status": "success", "applications": enriched}), 200
+        return jsonify({ "applications": enriched }), 200
 
     except Exception as e:
-        print("❌ Error in /received-applications:", str(e))
-        return jsonify({"status": "error", "message": "Internal server error"}), 500
+        print("❌ Server Error:", str(e))
+        return jsonify({"error": "Internal error", "details": str(e)}), 500

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Received Applications</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .app-card {
+      background: white;
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .app-card h3 {
+      margin: 0 0 10px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>📥 Received Applications</h1>
+  <div id="applications-container"></div>
+
+  <script>
+    const token = localStorage.getItem("token");
+    const API_URL = "https://llts-app.onrender.com/api/owner/fetch-received"; // New route
+
+    fetch(API_URL, {
+      method: "GET",
+      headers: {
+        "Authorization": "Bearer " + token
+      }
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+        console.log("✅ Applications Fetched:", data.applications);
+        renderApplications(data.applications);
+      } else {
+        console.error("❌ Error:", data.message);
+        document.getElementById("applications-container").innerHTML = "<p>Error fetching applications.</p>";
+      }
+    })
+    .catch(err => {
+      console.error("🚨 Fetch error:", err);
+      document.getElementById("applications-container").innerHTML = "<p>Error loading applications.</p>";
+    });
+
+    function renderApplications(applications) {
+      const container = document.getElementById("applications-container");
+      container.innerHTML = "";
+
+      if (!applications.length) {
+        container.innerHTML = "<p>No applications received yet.</p>";
+        return;
+      }
+
+      applications.forEach(app => {
+        const div = document.createElement("div");
+        div.className = "app-card";
+        div.innerHTML = `
+          <h3>${app.tender_title}</h3>
+          <p><strong>Worker:</strong> ${app.worker_name}</p>
+          <p><strong>Contact:</strong> ${app.contact || app.worker_contact || "N/A"}</p>
+          <p><strong>Quoted Price:</strong> ₹${app.quoted_price}</p>
+          <p><strong>Message:</strong> ${app.message}</p>
+          <p><strong>Applied At:</strong> ${new Date(app.applied_at).toLocaleString()}</p>
+          <p><strong>Status:</strong> ${app.status}</p>
+        `;
+        container.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>

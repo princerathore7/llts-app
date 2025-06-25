@@ -39,7 +39,8 @@ document.getElementById('applyForm').addEventListener('submit', async function (
   btn.textContent = "Submitting...";
 
   try {
-    const res = await fetch("http://localhost:5000/api/worker/apply-tender", {
+    const res = await fetch("https://llts-app.onrender.com/api/worker/apply-tender", {
+
       method: "POST",
       headers: {
         "Authorization": `Bearer ${token}`,

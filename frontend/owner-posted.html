@@ -1,12 +1,101 @@
-<!-- owner-tenders.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Owner's Posted Tenders</title>
+  <title>📋 Your Posted Tenders</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="lltsstyle.css" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f2f4f8;
+      margin: 0;
+      padding-top: 80px; /* space for fixed header */
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-color: #004aad;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 1000;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .section {
+      padding: 40px 20px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      color: #1a1a1a;
+    }
+
+    .card p {
+      margin: 6px 0;
+      font-size: 14px;
+      color: #444;
+    }
+
+    .btn {
+      align-self: flex-start;
+      margin-top: 15px;
+      padding: 8px 14px;
+      background-color: #e63946;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s ease;
+    }
+
+    .btn:hover {
+      background-color: #c21825;
+    }
+
+    .empty-message {
+      text-align: center;
+      font-size: 18px;
+      color: #777;
+      padding: 40px 0;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -15,23 +104,32 @@
 
   <div class="section">
     <div id="ownerTenderList" class="card-grid">
-      <!-- Owner Tenders will be displayed here -->
+      <!-- Tenders will be rendered here -->
     </div>
   </div>
 
-  <script src="lltsscript.js"></script>
   <script>
     async function fetchOwnerTenders() {
       const token = localStorage.getItem("token");
-      if (!token) return alert("Not logged in");
+      if (!token) {
+        alert("You are not logged in.");
+        return;
+      }
 
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      const ownerId = payload.user_id || payload.id;
+      let ownerId;
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        ownerId = payload.user_id || payload.id;
+      } catch (err) {
+        console.error("Invalid JWT:", err);
+        return;
+      }
 
       try {
-        const res = await fetch("http://localhost:5000/api/get-tenders", {
+        const res = await fetch("https://llts-app.onrender.com/api/get-tenders", {
           headers: { Authorization: `Bearer ${token}` }
         });
+
         const data = await res.json();
         const ownerTenders = data.tenders.filter(t => t.owner_id === ownerId);
 
@@ -39,7 +137,7 @@
         tenderList.innerHTML = "";
 
         if (ownerTenders.length === 0) {
-          tenderList.innerHTML = "<p>No tenders posted yet.</p>";
+          tenderList.innerHTML = `<p class="empty-message">You haven't posted any tenders yet.</p>`;
           return;
         }
 
@@ -51,36 +149,38 @@
               <p><strong>Budget:</strong> ₹${t.budget}</p>
               <p><strong>Location:</strong> ${t.location}</p>
               <p><strong>Deadline:</strong> ${new Date(t.deadline).toLocaleDateString()}</p>
-              <button class="btn btn-report" onclick="deleteTender('${t._id}')">🗑 Delete</button>
+              <button class="btn" onclick="deleteTender('${t._id}')">🗑 Delete</button>
             </div>
           `;
         });
       } catch (err) {
-        console.error("Error fetching tenders", err);
+        console.error("Error fetching tenders:", err);
+        alert("Failed to load tenders.");
       }
     }
 
     async function deleteTender(tenderId) {
-      if (!confirm("Delete this tender permanently?")) return;
       const token = localStorage.getItem("token");
+      if (!confirm("Are you sure you want to delete this tender?")) return;
 
       try {
-        const res = await fetch(`https://llts-app.onrender.com/api/delete-tender/${tenderId}`, {
+        const res = await fetch(`https://llts-app.onrender.com/api/owner/delete-tender/${tenderId}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
+
         const result = await res.json();
-        if (result.message) {
-          alert("Tender deleted.");
-          fetchOwnerTenders(); // Refresh after deletion
+        if (res.ok) {
+          alert("Tender deleted successfully.");
+          fetchOwnerTenders(); // Refresh list
         } else {
-          alert(result.error || "Deletion failed");
+          alert(result.message || "Failed to delete tender.");
         }
       } catch (err) {
-        alert("Error deleting");
-        console.error(err);
+        console.error("Error deleting tender:", err);
+        alert("Network error. Could not delete tender.");
       }
     }
 

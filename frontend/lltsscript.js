@@ -46,7 +46,7 @@ document.getElementById('signup-form')?.addEventListener('submit', async (event)
         if (response.ok) {
             const token = data.access_token || data.token;
             if (token) {
-                localStorage.setItem('token', token);
+                localStorage.setItem('jwtToken', data.token); 
                 localStorage.setItem('role', data.role || role);
                 localStorage.setItem('username', username);
 
@@ -97,7 +97,7 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
         const data = await response.json();
 
         if (response.ok && data.token) {
-            localStorage.setItem('token', data.token);
+            localStorage.setItem('jwtToken', data.token); 
             localStorage.setItem('role', data.role);
             localStorage.setItem('username', username);
 

@@ -2,15 +2,13 @@ from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from bson import ObjectId
 from flask_jwt_extended import create_access_token
-from flask_cors import cross_origin
-from flask_cors import CORS
+from flask_cors import cross_origin, CORS
 
 import os
 from dotenv import load_dotenv
 from datetime import datetime
 from mongo import mongo
 from models.token import init_token_record
-
 
 # ✅ Load environment variables
 env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '.env'))
@@ -20,11 +18,19 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 if not SECRET_KEY:
     raise Exception("❌ SECRET_KEY not found. Please check your .env file and restart.")
 
+# ✅ Allowed frontend origins (local + deployed)
+ALLOWED_ORIGINS = [
+    "http://localhost:5500",
+    "http://127.0.0.1:5500",
+    "https://llts-app.onrender.com"
+]
+
 auth_bp = Blueprint('auth', __name__)
-CORS(auth_bp, origins=["http://127.0.0.1:5500", "http://localhost:5500"], supports_credentials=True)
+CORS(auth_bp, origins=ALLOWED_ORIGINS, supports_credentials=True)
+
 # ===================== SIGNUP =====================
 @auth_bp.route('/signup', methods=['POST', 'OPTIONS'])
-@cross_origin(origins=["http://localhost:5500", "http://127.0.0.1:5500"], supports_credentials=True)
+@cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
 def signup():
     if request.method == 'OPTIONS':
         return '', 200  # ✅ Handle CORS preflight
@@ -75,7 +81,7 @@ def signup():
 
 # ===================== LOGIN =====================
 @auth_bp.route('/login', methods=['POST', 'OPTIONS'])
-@cross_origin(origins=["http://localhost:5500", "http://127.0.0.1:5500"], supports_credentials=True)
+@cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
 def login():
     if request.method == 'OPTIONS':
         return '', 200  # ✅ Preflight fix for CORS

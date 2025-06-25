@@ -7,11 +7,13 @@ from flask_cors import cross_origin
 
 tender_bp = Blueprint('tender', __name__)
 
+# ✅ ALLOWED ORIGINS for local + live server
 ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
     "http://localhost:5500",
-    "http://127.0.0.1:5500"
+    "http://127.0.0.1:5500",
+    "https://llts-app.onrender.com"
 ]
 
 # ---------------------------------------
@@ -160,7 +162,7 @@ def delete_tender(tender_id):
         current_user = get_jwt_identity()
         result = mongo.db.tenders.delete_one({
             "_id": ObjectId(tender_id),
-            "created_by": ObjectId(current_user)
+            "created_by": str(current_user)  # ✅ fixed here
         })
 
         if result.deleted_count == 1:
@@ -171,3 +173,4 @@ def delete_tender(tender_id):
     except Exception as e:
         print("❌ Error deleting tender:", e)
         return jsonify({"error": "Internal Server Error"}), 500
+

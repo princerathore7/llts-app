@@ -173,7 +173,7 @@ def apply_tender():
         mongo.db.applications.insert_one({
             "tender_id": tender_obj_id,
             "worker_id": ObjectId(user_id),
-            "owner_id": str(tender.get("owner_id") or tender.get("created_by")),
+            "owner_id": str(tender["created_by"]),
             "worker_name": worker_name,
             "contact": mobile,
             "quoted_price": quoted_price,
@@ -206,3 +206,19 @@ def get_applied_tender_count():
     except Exception as e:
         print("❌ Error in counting applications:", str(e))
         return jsonify({"error": "Server error"}), 500
+# ========================= 🔢 worekr profile=========================
+@worker_bp.route('/all-profiles', methods=['GET'])
+def get_all_worker_profiles():
+    workers = mongo.db.users.find({"role": "worker"})
+    result = []
+    for w in workers:
+        result.append({
+            "id": str(w["_id"]),
+            "name": w.get("name", "Unnamed"),
+            "skill": w.get("skills", ""),
+            "experience": w.get("experience", 0),
+            "location": w.get("location", ""),
+            "img": w.get("img", "default-worker.jpg"),  # Optional image field
+            "icon": "bi-person-workspace"  # For frontend
+        })
+    return jsonify(result), 200

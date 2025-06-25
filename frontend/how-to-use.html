@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>How to Use LLTS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: radial-gradient(circle at center, #0a0f1a, #101d2d);
+      color: #fff;
+      padding: 2rem 1rem 4rem;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.7rem;
+      color: #fdd835;
+      margin-bottom: 2rem;
+      letter-spacing: 1px;
+    }
+
+    .steps, .token-section, .rules-section {
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 20px;
+      padding: 2rem;
+      margin: 2rem auto;
+      max-width: 850px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .step i {
+      font-size: 2rem;
+      color: #fdd835;
+      min-width: 40px;
+    }
+
+    .step-content h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.3rem;
+      color: #fff;
+    }
+
+    .step-content p {
+      font-size: 1rem;
+      color: #ccc;
+    }
+
+    .token-section h2, .rules-section h2 {
+      font-size: 1.5rem;
+      color: #00e5ff;
+      margin-bottom: 1rem;
+    }
+
+    ul {
+      padding-left: 1.5rem;
+      color: #ddd;
+    }
+
+    ul li {
+      margin-bottom: 0.6rem;
+      line-height: 1.6;
+    }
+
+    .btns {
+      text-align: center;
+      margin-top: 3rem;
+    }
+
+    .btn {
+      background: #fdd835;
+      color: #111;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0.5rem 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(255, 221, 51, 0.2);
+    }
+
+    .btn:hover {
+      background-color: #fff350;
+      transform: translateY(-2px);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 4rem;
+      color: #aaa;
+      font-size: 0.95rem;
+    }
+
+    footer strong {
+      color: #fdd835;
+    }
+
+    @media (max-width: 600px) {
+      .step {
+        flex-direction: column;
+      }
+
+      .btn {
+        display: block;
+        margin: 1rem auto;
+        width: 90%;
+      }
+
+      .steps, .token-section, .rules-section {
+        padding: 1.5rem;
+      }
+    }
+  
+  </style>
+</head>
+<body>
+
+  <h1>🚀 How to Use the LLTS App</h1>
+  
+  <div class="steps">
+    <div class="step">
+      <i class="fas fa-user-plus"></i>
+      <div class="step-content">
+<h3>1. Sign Up</h3>
+        <p>Choose your role as a Work Owner or Worker and sign up with basic details.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <i class="fas fa-right-to-bracket"></i>
+      <div class="step-content">
+        <h3>2. Log In</h3>
+        <p>Use your credentials to securely log in and access your personalized dashboard.</p>
+      </div>
+    </div>
+ 
+    <div class="step">
+      <i class="fas fa-briefcase"></i>
+      <div class="step-content">
+        <h3>3. Post or Apply for Tenders</h3>
+        <p>Owners can post tenders/auctions, and workers can explore and apply based on their skills.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <i class="fas fa-handshake"></i>
+      <div class="step-content">
+        <h3>4. Accept, Reject & Collaborate</h3>
+        <p>Owners can manage applications and hire workers. You can then collaborate through the app.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="token-section">
+    <h2>🎟️ Token System</h2>
+    <ul>
+      <li>💰 Every user has a token wallet linked to their profile.</li>
+      <li>📤 Posting a tender/auction costs <strong>3 tokens</strong>.</li>
+      <li>📥 Applying to a tender also costs <strong>3 tokens</strong>.</li>
+      <li>💳 You can purchase tokens anytime based on your requirement.</li>
+      <li>🔐 This ensures seriousness and accountability from both parties.</li>
+    </ul>
+  </div>
+
+  <div class="rules-section">
+    <h2>⚠️ App Rules & Warnings</h2>
+    <ul>
+      <li>📱 You can register **both an Owner and a Worker account** using the **same mobile number**.</li>
+      <li>🔄 You can switch between the two roles easily anytime.</li>
+      <li>🚫 This app operates in a **strict real-world environment**.</li>
+      <li>❌ Do not post fake tenders or apply as a joke — such users will be **permanently banned**.</li>
+      <li>✅ Only genuine and verified posts will be entertained. Respect the platform.</li>
+    </ul>
+  </div>
+
+<div class="btns">
+  <button class="btn" onclick="history.back()">
+    <i class="fas fa-arrow-left"></i> Back
+  </button>
+</div>
+
+
+  <footer style="text-align:center; margin-top: 3rem; color: #aaa; font-size: 0.95rem;">
+    <p>Dev.by <strong>S&P Developments™</strong></p>
+    <p>&copy; 2025 Local Livelihood Tender System</p>
+  </footer>
+
+</body>
+</html>
+
+</body>
+</html>
