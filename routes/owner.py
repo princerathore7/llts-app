@@ -1,13 +1,10 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, redirect
 from werkzeug.security import generate_password_hash, check_password_hash
 from bson import ObjectId
-from flask_jwt_extended import jwt_required, get_jwt_identity
-
-from flask_cors import cross_origin, CORS
-
-import os
-from dotenv import load_dotenv
+from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_request
+from flask_cors import cross_origin
 from datetime import datetime
+
 from mongo import mongo
 from models.token import init_token_record
 
@@ -18,10 +15,10 @@ ALLOWED_ORIGINS = [
     "http://127.0.0.1:5500",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-    "https://llts-app.onrender.com"  # ✅ Add this
+    "https://llts-app.onrender.com"
 ]
 
-# ✅ Dummy Owner Profile
+# ✅ Owner Profile
 @owner_bp.route('/api/owner/profile', methods=['GET'])
 @jwt_required()
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
@@ -45,8 +42,7 @@ def get_owner_profile():
         }
     }), 200
 
-
-# ✅ Create Tender
+# ✅ Post New Tender
 @owner_bp.route('/api/owner/tenders', methods=['POST', 'OPTIONS'])
 @jwt_required()
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
@@ -62,11 +58,8 @@ def create_tender():
         return jsonify({"status": "error", "message": "Your account has been disabled by admin."}), 403
 
     data = request.get_json()
-    if not data:
-        return jsonify({"status": "error", "message": "Missing JSON data"}), 400
-
     required_fields = ["title", "budget", "deadline", "description"]
-    if not all(field in data for field in required_fields):
+    if not data or not all(field in data for field in required_fields):
         return jsonify({"status": "error", "message": "Missing required fields"}), 400
 
     tender = {
@@ -84,21 +77,16 @@ def create_tender():
 
     return jsonify({"status": "success", "tender": tender}), 201
 
-
-# ✅ Get Tenders Posted by This Owner
+# ✅ Get Owner's Tenders
 @owner_bp.route('/api/owner/tenders', methods=['GET', 'OPTIONS'])
+@jwt_required()
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
 def get_owner_tenders():
     if request.method == 'OPTIONS':
         return jsonify({}), 200
 
     try:
-        verify_jwt_in_request_(optional=True)
         owner_id = get_jwt_identity()
-
-        if not owner_id:
-            return jsonify({"status": "error", "message": "Missing or invalid token"}), 401
-
         owner = mongo.db.users.find_one({"_id": ObjectId(owner_id), "role": "owner"})
         if not owner:
             return jsonify({"status": "error", "message": "Owner not found"}), 404
@@ -115,25 +103,19 @@ def get_owner_tenders():
         print("❌ Error in get_owner_tenders:", str(e))
         return jsonify({"status": "error", "message": "Internal server error", "details": str(e)}), 500
 
-
+# ✅ Delete Tender
 @owner_bp.route('/api/owner/delete-tender/<tender_id>', methods=['DELETE', 'OPTIONS'])
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
 @jwt_required()
 def delete_tender(tender_id):
-    # ✅ Handle preflight OPTIONS request
     if request.method == "OPTIONS":
-        print("🟡 OPTIONS request received for DELETE route.")
-        return jsonify({}), 200  # ✅ Send OK without extra headers
+        return jsonify({}), 200
 
     try:
         owner_id = get_jwt_identity()
-        print("🛠️ DELETE /delete-tender called for:", tender_id)
-        print("🔑 JWT Identity:", owner_id)
-
         tender = mongo.db.tenders.find_one({"_id": ObjectId(tender_id)})
         if not tender:
             return jsonify({"status": "error", "message": "Tender not found"}), 404
-
         if tender.get("created_by") != str(owner_id):
             return jsonify({"status": "error", "message": "Unauthorized"}), 403
 
@@ -146,10 +128,9 @@ def delete_tender(tender_id):
         print("❌ Error in delete_tender:", str(e))
         return jsonify({"status": "error", "message": "Server error", "details": str(e)}), 500
 
-
 # ✅ Accept Application
 @owner_bp.route('/accept-application/<app_id>', methods=['PATCH', 'OPTIONS'])
-@jwt_required(optional=True)
+@jwt_required()
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
 def accept_application(app_id):
     if request.method == 'OPTIONS':
@@ -183,10 +164,9 @@ def accept_application(app_id):
         print("❌ Error in accept_application:", str(e))
         return jsonify({"status": "error", "message": "Internal error", "details": str(e)}), 500
 
-
 # ✅ Reject Application
 @owner_bp.route('/reject-application/<app_id>', methods=['DELETE', 'OPTIONS'])
-@jwt_required(optional=True)
+@jwt_required()
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
 def reject_application(app_id):
     if request.method == 'OPTIONS':
@@ -216,37 +196,18 @@ def reject_application(app_id):
     except Exception as e:
         print("❌ Error in reject_application:", str(e))
         return jsonify({"status": "error", "message": "Internal error", "details": str(e)}), 500
-@owner_bp.route('/delete-tender-safe', methods=['POST'])
-def delete_tender_safe():
-    try:
-        tender_id = request.form.get('tender_id')
-        if not tender_id:
-            return "Tender ID missing", 400
 
-        mongo.db.tenders.delete_one({"_id": ObjectId(tender_id)})
-        mongo.db.applications.delete_many({"tender_id": ObjectId(tender_id)})
-
-        # Redirect back to tender history
-        return redirect("http://127.0.0.1:5500/owner-posted.html")
-
-    except Exception as e:
-        print("❌ Safe delete error:", str(e))
-        return "Failed to delete tender", 500
-    # ✅ Final Fix: Missing Received Applications Route
-# ✅ GET: Received Applications for Logged-in Owner
+# ✅ Owner Application Inbox
 @owner_bp.route('/api/owner/my-applications', methods=['GET', 'OPTIONS'])
+@jwt_required()
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
-
 def get_owner_received_applications():
     if request.method == "OPTIONS":
-        print("✅ CORS Preflight Received")
-        return jsonify({ "message": "CORS preflight success" }), 200
-
-    from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
-    verify_jwt_in_request()  # ✅ Validate token manually for GET requests
-    owner_id = get_jwt_identity()
+        print("🟡 CORS Preflight: /my-applications")
+        return jsonify({"message": "Preflight OK"}), 200
 
     try:
+        owner_id = get_jwt_identity()
         print("🧾 Owner ID:", owner_id)
 
         applications = list(mongo.db.applications.find({
@@ -259,11 +220,13 @@ def get_owner_received_applications():
         enriched = []
         for app in applications:
             try:
-                tender = mongo.db.tenders.find_one({
-                    "_id": ObjectId(app["tender_id"])} if isinstance(app["tender_id"], str)
+                tender = mongo.db.tenders.find_one(
+                    {"_id": ObjectId(app["tender_id"])}
+                    if isinstance(app["tender_id"], str)
                     else {"_id": app["tender_id"]}
                 )
                 worker = mongo.db.users.find_one({"_id": ObjectId(app["worker_id"])})
+
                 enriched.append({
                     "_id": str(app["_id"]),
                     "tender_title": tender.get("title", "N/A") if tender else "N/A",
@@ -275,10 +238,27 @@ def get_owner_received_applications():
                     "worker_contact": worker.get("contact", "N/A") if worker else "N/A"
                 })
             except Exception as e:
-                print("⚠️ Skipping application due to error:", e)
+                print("⚠️ Skipping application:", e)
 
-        return jsonify({ "applications": enriched }), 200
+        return jsonify({"applications": enriched}), 200
 
     except Exception as e:
-        print("❌ Server Error:", str(e))
-        return jsonify({"error": "Internal error", "details": str(e)}), 500
+        print("❌ Error in /my-applications:", e)
+        return jsonify({"error": "Server error", "details": str(e)}), 500
+
+# ✅ Fallback safe delete for testing (Not protected)
+@owner_bp.route('/delete-tender-safe', methods=['POST'])
+def delete_tender_safe():
+    try:
+        tender_id = request.form.get('tender_id')
+        if not tender_id:
+            return "Tender ID missing", 400
+
+        mongo.db.tenders.delete_one({"_id": ObjectId(tender_id)})
+        mongo.db.applications.delete_many({"tender_id": ObjectId(tender_id)})
+
+        return redirect("http://127.0.0.1:5500/owner-posted.html")
+
+    except Exception as e:
+        print("❌ Safe delete error:", str(e))
+        return "Failed to delete tender", 500
