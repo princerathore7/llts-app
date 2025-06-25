@@ -198,9 +198,12 @@ def reject_application(app_id):
         return jsonify({"status": "error", "message": "Internal error", "details": str(e)}), 500
 
 # ✅ Owner Application Inbox
+# ✅ FIXED:
 @owner_bp.route('/api/owner/my-applications', methods=['GET', 'OPTIONS'])
+@jwt_required()
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
 def get_owner_received_applications():
+
     if request.method == "OPTIONS":
         print("🟡 CORS Preflight: /my-applications")
         response = jsonify({"message": "Preflight OK"})
