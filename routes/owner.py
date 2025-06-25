@@ -199,14 +199,16 @@ def reject_application(app_id):
 
 # ✅ Owner Application Inbox
 @owner_bp.route('/api/owner/my-applications', methods=['GET', 'OPTIONS'])
-@jwt_required()
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
 def get_owner_received_applications():
     if request.method == "OPTIONS":
         print("🟡 CORS Preflight: /my-applications")
-        return jsonify({"message": "Preflight OK"}), 200
+        response = jsonify({"message": "Preflight OK"})
+        response.status_code = 200
+        return response
 
     try:
+        verify_jwt_in_request()
         owner_id = get_jwt_identity()
         print("🧾 Owner ID:", owner_id)
 
@@ -221,8 +223,7 @@ def get_owner_received_applications():
         for app in applications:
             try:
                 tender = mongo.db.tenders.find_one(
-                    {"_id": ObjectId(app["tender_id"])}
-                    if isinstance(app["tender_id"], str)
+                    {"_id": ObjectId(app["tender_id"])} if isinstance(app["tender_id"], str)
                     else {"_id": app["tender_id"]}
                 )
                 worker = mongo.db.users.find_one({"_id": ObjectId(app["worker_id"])})
@@ -245,20 +246,3 @@ def get_owner_received_applications():
     except Exception as e:
         print("❌ Error in /my-applications:", e)
         return jsonify({"error": "Server error", "details": str(e)}), 500
-
-# ✅ Fallback safe delete for testing (Not protected)
-@owner_bp.route('/delete-tender-safe', methods=['POST'])
-def delete_tender_safe():
-    try:
-        tender_id = request.form.get('tender_id')
-        if not tender_id:
-            return "Tender ID missing", 400
-
-        mongo.db.tenders.delete_one({"_id": ObjectId(tender_id)})
-        mongo.db.applications.delete_many({"tender_id": ObjectId(tender_id)})
-
-        return redirect("http://127.0.0.1:5500/owner-posted.html")
-
-    except Exception as e:
-        print("❌ Safe delete error:", str(e))
-        return "Failed to delete tender", 500
