@@ -171,6 +171,21 @@
   transform: scale(1.05);
 }
 
+.token-button {
+  background: linear-gradient(to right, #ff6b6b, #f06595);
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-top: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transition: 0.3s ease;
+}
+.token-button:hover {
+  transform: scale(1.05);
+}
 
   </style>
 </head>
@@ -181,9 +196,11 @@
   🎫 My Tokens
 </button>
 
-  <div id="token-balance" class="text-info" style="font-weight: 600;">Loading Tokens...</div>
+  <div id="token-balance" class="text-info" style="font-weight: 600;"></div>
 
   <button id="logoutBtn" class="logout-btn">🚪 Logout</button>
+  <button id="watchAdBtn" class="token-button">🎁 Watch Ad & Get 1 Token</button>
+
 
   <section class="profile-summary">
    <img src="https://cdn-icons-png.flaticon.com/512/4140/4140037.png" 
@@ -192,7 +209,7 @@
 
     <h2 id="worker-name">Loading...</h2>
     <p id="worker-email">Email: ...</p>
-    <p id="worker-location">Location: ...</p>
+    <p id="worker-location"></p>
     <p id="worker-exp">Experience: ...</p>
     <p id="worker-skills">Skills: ...</p>
   </section>

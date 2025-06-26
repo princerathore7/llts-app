@@ -35,18 +35,18 @@ document.getElementById('signup-form')?.addEventListener('submit', async (event)
 
     try {
         const response = await fetch(`${API_BASE}/signup`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password, name, email, role }),
-    credentials: 'include'  // ✅ ADD THIS
-});
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password, name, email, role }),
+            credentials: 'include'
+        });
 
         const data = await response.json();
 
         if (response.ok) {
             const token = data.access_token || data.token;
             if (token) {
-                localStorage.setItem('jwtToken', data.token); 
+                localStorage.setItem('jwt', token);  // ✅ FIXED
                 localStorage.setItem('role', data.role || role);
                 localStorage.setItem('username', username);
 
@@ -88,16 +88,16 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
 
     try {
         const response = await fetch(`${API_BASE}/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password }),
-    credentials: 'include'  // ✅ ADD THIS
-});
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password }),
+            credentials: 'include'
+        });
 
         const data = await response.json();
 
         if (response.ok && data.token) {
-            localStorage.setItem('jwtToken', data.token); 
+            localStorage.setItem('jwt', data.token);  // ✅ MATCHING
             localStorage.setItem('role', data.role);
             localStorage.setItem('username', username);
 
@@ -122,6 +122,7 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
         alert('Server error during login. Check console.');
     }
 });
+
 
 // ========== POST TENDER ==========
 document.getElementById('post-tender-form')?.addEventListener('submit', async (e) => {
@@ -317,118 +318,117 @@ window.applyForTender = applyForTender;
 window.fetchAndRenderApplications = fetchAndRenderApplications;
 window.openApplicationsModal = openApplicationsModal;
 
-// ========== FETCH OWNER APPLICATIONS ==========
-async function fetchAndRenderApplications(ownerId) {
-    try {
-        const token = localStorage.getItem("token");
-        const res = await fetch(`${API_BASE}/owner/applications/${ownerId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-        });
-
-        const data = await res.json();
-        const container = document.getElementById("owner-applications");
-        container.innerHTML = '';
-
-        if (data.applications.length === 0) {
-            container.innerHTML = "<p>No applications yet.</p>";
-            return;
-        }
-
-        data.applications.forEach(app => {
-            const card = document.createElement("div");
-            card.className = "application-card";
-            card.innerHTML = `
-                <h3>Worker: ${app.worker_name}</h3>
-                <p><strong>Tender ID:</strong> ${app.tender_id}</p>
-                <p><strong>Quote:</strong> ₹${app.quoted_price}</p>
-                <p><strong>Message:</strong> ${app.message}</p>
-                <p><strong>Contact:</strong> ${app.contact}</p>
-            `;
-            container.appendChild(card);
-        });
-    } catch (err) {
-        console.error("Error fetching applications:", err);
-    }
-}
-
-// ========== OPEN APPLICATION MODAL ==========
-function openApplicationsModal() {
-    const token = localStorage.getItem("token");
-    if (!token) {
-        alert("Token not found. Please login again.");
-        window.location.href = "ownerlogin.html";
-        return;
-    }
-
-    loadReceivedApplications();
-
-    const modal = document.getElementById("applicationsModal");
-    if (modal) modal.style.display = "block";
-}
-
-// ========== LOAD RECEIVED APPLICATIONS ==========
+// ✅ Fetch and Render Received Applications
 async function loadReceivedApplications() {
-    const token = localStorage.getItem("token");
-    const ownerId = localStorage.getItem("owner_id");
+  const token = localStorage.getItem("jwt");  // ✅ correct key
+  const container = document.getElementById("owner-applications");
+  container.innerHTML = "";
 
-    try {
-        const res = await fetch(`${API_BASE}/owner/applications/${ownerId}`, {
-            method: "GET",
-            headers: {
-                Authorization: "Bearer " + token,
-                "Content-Type": "application/json"
-            }
-        });
-
-        const container = document.getElementById("owner-applications");
-        container.innerHTML = "";
-
-        if (!res.ok) {
-            container.innerHTML = "<p>Failed to load applications.</p>";
-            return;
-        }
-
-        const data = await res.json();
-
-        if (!data.applications || data.applications.length === 0) {
-            container.innerHTML = "<p>No applications received yet.</p>";
-            return;
-        }
-
-        data.applications.forEach(app => {
-            const div = document.createElement("div");
-            div.className = "card";
-            div.innerHTML = `
-                <h3>${app.worker_name || 'Unknown Worker'}</h3>
-                <p><strong>Applied for:</strong> ${app.tender_title || '-'}</p>
-                <p><strong>Status:</strong> ${app.status?.toUpperCase() || 'PENDING'}</p>
-                <p><strong>Contact:</strong> ${app.worker_email || 'N/A'}</p>
-            `;
-            container.appendChild(div);
-        });
-    } catch (err) {
-        console.error("Error loading applications:", err);
-        const container = document.getElementById("owner-applications");
-        container.innerHTML = "<p>Error fetching applications.</p>";
-    }
-}
-async function showTokenBalance() {
-  const token = localStorage.getItem("token");
-  if (!token) return;
+  if (!token) {
+    container.innerHTML = "<p>Token missing. Please log in again.</p>";
+    return;
+  }
 
   try {
-    const res = await fetch("https://llts-app.onrender.com/api/user/token-info", {
+    const res = await fetch(`${API_BASE}/owner/my-applications`, {
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${token}`
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
       }
     });
-    const data = await res.json();
-    if (data.status === "success") {
-      document.getElementById("token-balance").innerText = `🪙 Tokens: ${data.tokens}`;
+
+    if (!res.ok) {
+      console.warn("❌ Application fetch failed:", res.status);
+      container.innerHTML = "<p>Failed to load applications.</p>";
+      return;
     }
+
+    const data = await res.json();
+    if (!data.applications || data.applications.length === 0) {
+      container.innerHTML = "<p>No applications received yet.</p>";
+      return;
+    }
+
+    data.applications.forEach(app => {
+      const div = document.createElement("div");
+      div.className = "card";
+      div.innerHTML = `
+        <h3>${app.worker_name || 'Unknown Worker'}</h3>
+        <p><strong>Applied for:</strong> ${app.tender_title || '-'}</p>
+        <p><strong>Status:</strong> ${app.status?.toUpperCase() || 'PENDING'}</p>
+        <p><strong>Contact:</strong> ${app.worker_contact || 'N/A'}</p>
+      `;
+      container.appendChild(div);
+    });
+
   } catch (err) {
-    console.error("Token fetch error:", err);
-    document.getElementById("token-balance").innerText = "🪙 Tokens: --";
+    console.error("❌ Error loading applications:", err);
+    container.innerHTML = "<p>Error fetching applications.</p>";
   }
 }
+
+// ✅ Open Application Modal
+function openApplicationsModal() {
+  const token = localStorage.getItem("jwt");
+  if (!token) {
+    alert("Token not found. Please login again.");
+    window.location.href = "ownerlogin.html";
+    return;
+  }
+
+  loadReceivedApplications();  // ✅ working version
+  const modal = document.getElementById("applicationsModal");
+  if (modal) modal.style.display = "block";
+}
+
+// ✅ LOAD RECEIVED APPLICATIONS - Nullified Version
+// async function loadReceivedApplications() {
+//   const token = localStorage.getItem("jwt");  // ✅ correct key
+//   const container = document.getElementById("owner-applications");
+//   container.innerHTML = "";
+
+//   if (!token) {
+//     container.innerHTML = "<p>Token missing. Please login again.</p>";
+//     return;
+//   }
+
+//   try {
+//     const res = await fetch(`${API_BASE}/owner/my-applications`, {
+//       method: "GET",
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         "Content-Type": "application/json"
+//       }
+//     });
+
+//     if (!res.ok) {
+//       console.warn("❌ Application fetch failed:", res.status);
+//       container.innerHTML = "<p>Failed to load applications.</p>";
+//       return;
+//     }
+
+//     const data = await res.json();
+
+//     if (!data.applications || data.applications.length === 0) {
+//       container.innerHTML = "<p>No applications received yet.</p>";
+//       return;
+//     }
+
+//     data.applications.forEach(app => {
+//       const div = document.createElement("div");
+//       div.className = "card";
+//       div.innerHTML = `
+//         <h3>${app.worker_name || 'Unknown Worker'}</h3>
+//         <p><strong>Applied for:</strong> ${app.tender_title || '-'}</p>
+//         <p><strong>Status:</strong> ${app.status?.toUpperCase() || 'PENDING'}</p>
+//         <p><strong>Contact:</strong> ${app.worker_contact || 'N/A'}</p>
+//       `;
+//       container.appendChild(div);
+//     });
+
+//   } catch (err) {
+//     console.error("❌ Error loading applications:", err);
+//     container.innerHTML = "<p>Error fetching applications.</p>";
+//   }
+// }

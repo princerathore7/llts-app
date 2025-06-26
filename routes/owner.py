@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, redirect
+from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from bson import ObjectId
 from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_request
@@ -20,10 +20,11 @@ ALLOWED_ORIGINS = [
 
 # ✅ Owner Profile
 @owner_bp.route('/api/owner/profile', methods=['GET'])
-@jwt_required()
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
+@jwt_required()
 def get_owner_profile():
     owner_id = get_jwt_identity()
+    print("🔍 Owner ID:", owner_id)
     owner = mongo.db.users.find_one({'_id': ObjectId(owner_id), 'role': 'owner'})
 
     if not owner:
@@ -44,43 +45,48 @@ def get_owner_profile():
 
 # ✅ Post New Tender
 @owner_bp.route('/api/owner/tenders', methods=['POST', 'OPTIONS'])
-@jwt_required()
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
+@jwt_required()
 def create_tender():
     if request.method == "OPTIONS":
         return '', 200
 
-    owner_id = get_jwt_identity()
-    owner = mongo.db.users.find_one({"_id": ObjectId(owner_id), "role": "owner"})
-    if not owner:
-        return jsonify({"status": "error", "message": "Owner not found"}), 404
-    if owner.get("status") == "disabled":
-        return jsonify({"status": "error", "message": "Your account has been disabled by admin."}), 403
+    try:
+        owner_id = get_jwt_identity()
+        owner = mongo.db.users.find_one({"_id": ObjectId(owner_id), "role": "owner"})
+        if not owner:
+            return jsonify({"status": "error", "message": "Owner not found"}), 404
+        if owner.get("status") == "disabled":
+            return jsonify({"status": "error", "message": "Your account has been disabled by admin."}), 403
 
-    data = request.get_json()
-    required_fields = ["title", "budget", "deadline", "description"]
-    if not data or not all(field in data for field in required_fields):
-        return jsonify({"status": "error", "message": "Missing required fields"}), 400
+        data = request.get_json()
+        required_fields = ["title", "budget", "deadline", "description"]
+        if not data or not all(field in data for field in required_fields):
+            return jsonify({"status": "error", "message": "Missing required fields"}), 400
 
-    tender = {
-        "title": data["title"],
-        "budget": data["budget"],
-        "deadline": data["deadline"],
-        "description": data["description"],
-        "created_by": str(owner["_id"]),
-        "status": "active",
-        "created_at": datetime.utcnow()
-    }
+        tender = {
+            "title": data["title"],
+            "budget": data["budget"],
+            "deadline": data["deadline"],
+            "description": data["description"],
+            "created_by": str(owner["_id"]),
+            "status": "active",
+            "created_at": datetime.utcnow()
+        }
 
-    result = mongo.db.tenders.insert_one(tender)
-    tender["_id"] = str(result.inserted_id)
+        result = mongo.db.tenders.insert_one(tender)
+        tender["_id"] = str(result.inserted_id)
 
-    return jsonify({"status": "success", "tender": tender}), 201
+        return jsonify({"status": "success", "tender": tender}), 201
+
+    except Exception as e:
+        print("❌ Error in create_tender:", e)
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 # ✅ Get Owner's Tenders
 @owner_bp.route('/api/owner/tenders', methods=['GET', 'OPTIONS'])
-@jwt_required()
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
+@jwt_required()
 def get_owner_tenders():
     if request.method == 'OPTIONS':
         return jsonify({}), 200
@@ -101,18 +107,22 @@ def get_owner_tenders():
 
     except Exception as e:
         print("❌ Error in get_owner_tenders:", str(e))
-        return jsonify({"status": "error", "message": "Internal server error", "details": str(e)}), 500
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 # ✅ Delete Tender
 @owner_bp.route('/api/owner/delete-tender/<tender_id>', methods=['DELETE', 'OPTIONS'])
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
-@jwt_required()
 def delete_tender(tender_id):
     if request.method == "OPTIONS":
         return jsonify({}), 200
 
+    from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
+
     try:
+        # Manually verify token (instead of decorator, so OPTIONS doesn't break)
+        verify_jwt_in_request()
         owner_id = get_jwt_identity()
+
         tender = mongo.db.tenders.find_one({"_id": ObjectId(tender_id)})
         if not tender:
             return jsonify({"status": "error", "message": "Tender not found"}), 404
@@ -126,12 +136,12 @@ def delete_tender(tender_id):
 
     except Exception as e:
         print("❌ Error in delete_tender:", str(e))
-        return jsonify({"status": "error", "message": "Server error", "details": str(e)}), 500
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 # ✅ Accept Application
 @owner_bp.route('/accept-application/<app_id>', methods=['PATCH', 'OPTIONS'])
-@jwt_required()
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
+@jwt_required()
 def accept_application(app_id):
     if request.method == 'OPTIONS':
         return jsonify({}), 200
@@ -162,22 +172,33 @@ def accept_application(app_id):
 
     except Exception as e:
         print("❌ Error in accept_application:", str(e))
-        return jsonify({"status": "error", "message": "Internal error", "details": str(e)}), 500
+        return jsonify({"status": "error", "message": str(e)}), 500
 
-# ✅ Reject Application
 @owner_bp.route('/reject-application/<app_id>', methods=['DELETE', 'OPTIONS'])
-@jwt_required()
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
 def reject_application(app_id):
     if request.method == 'OPTIONS':
         return jsonify({}), 200
 
+    from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
+
     try:
+        # ✅ This line manually verifies JWT, only for non-OPTIONS
+        verify_jwt_in_request()
+        owner_id = get_jwt_identity()
+
         app = mongo.db.applications.find_one({"_id": ObjectId(app_id)})
         if not app:
             return jsonify({"status": "error", "message": "Application not found"}), 404
 
         tender = mongo.db.tenders.find_one({"_id": app["tender_id"]})
+        if not tender:
+            return jsonify({"status": "error", "message": "Tender not found"}), 404
+
+        # ✅ Optional: Check if tender was created by this owner
+        if tender.get("created_by") != str(owner_id):
+            return jsonify({"status": "error", "message": "Unauthorized"}), 403
+
         mongo.db.users.update_one(
             {"_id": ObjectId(app["worker_id"])},
             {"$push": {
@@ -195,23 +216,18 @@ def reject_application(app_id):
 
     except Exception as e:
         print("❌ Error in reject_application:", str(e))
-        return jsonify({"status": "error", "message": "Internal error", "details": str(e)}), 500
+        return jsonify({"status": "error", "message": str(e)}), 500
 
-# ✅ Owner Application Inbox
-# ✅ FIXED:
+# ✅ Get Applications Received for Owner's Tenders
 @owner_bp.route('/api/owner/my-applications', methods=['GET', 'OPTIONS'])
-@jwt_required()
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
+@jwt_required()
 def get_owner_received_applications():
-
     if request.method == "OPTIONS":
         print("🟡 CORS Preflight: /my-applications")
-        response = jsonify({"message": "Preflight OK"})
-        response.status_code = 200
-        return response
+        return jsonify({"message": "Preflight OK"}), 200
 
     try:
-        verify_jwt_in_request()
         owner_id = get_jwt_identity()
         print("🧾 Owner ID:", owner_id)
 

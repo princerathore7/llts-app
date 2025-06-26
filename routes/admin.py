@@ -117,19 +117,32 @@ def get_all_auctions():
 # =============================
 # 🔨 DELETE TENDERS
 # =============================
-@admin_bp.route("/delete-tender/<tender_id>", methods=["DELETE"])
-@jwt_required()
+@admin_bp.route('/api/admin/delete-tender/<tender_id>', methods=['DELETE', 'OPTIONS'])
+@cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
 def admin_delete_tender(tender_id):
-    admin_id = get_jwt_identity()
+    if request.method == "OPTIONS":
+        return jsonify({}), 200
 
-    tender = mongo.db.tenders.find_one({"_id": ObjectId(tender_id)})
-    if not tender:
-        return jsonify({"status": "error", "message": "Tender not found"}), 404
+    from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
 
-    mongo.db.tenders.delete_one({"_id": ObjectId(tender_id)})
-    mongo.db.applications.delete_many({"tender_id": ObjectId(tender_id)})
+    try:
+        verify_jwt_in_request()
+        admin_id = get_jwt_identity()
+        print("🧾 Admin:", admin_id)
 
-    return jsonify({"status": "success", "message": "Tender deleted by admin"}), 200
+        tender = mongo.db.tenders.find_one({"_id": ObjectId(tender_id)})
+        if not tender:
+            return jsonify({"status": "error", "message": "Tender not found"}), 404
+
+        mongo.db.tenders.delete_one({"_id": ObjectId(tender_id)})
+        mongo.db.applications.delete_many({"tender_id": ObjectId(tender_id)})
+
+        return jsonify({"status": "success", "message": "Tender deleted successfully"}), 200
+
+    except Exception as e:
+        print("❌ Error deleting tender (admin):", str(e))
+        return jsonify({"status": "error", "message": str(e)}), 500
+
 
 # =============================
 # 🚀 ADMIN: Grant Tokens to Any User
