@@ -281,16 +281,12 @@ def get_available_workers():
         return jsonify({}), 200
 
     try:
-        workers = list(mongo.db.users.find({
-            "role": "worker",
-            "status": {"$ne": "disabled"}  # Exclude disabled users
-        }))
-
+        workers = list(mongo.db.users.find({"role": "worker", "status": "active"}))
         for w in workers:
             w["_id"] = str(w["_id"])
-
         return jsonify({"status": "success", "workers": workers}), 200
-
     except Exception as e:
-        print("❌ Error fetching workers:", str(e))
+        print("❌ Error in fetching workers:", e)
         return jsonify({"status": "error", "message": str(e)}), 500
+
+
