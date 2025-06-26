@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from mongo import mongo
 from bson import ObjectId
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
+from flask_cors import cross_origin  # ✅ THIS IS REQUIRED
 from models.token import add_tokens
 
 admin_bp = Blueprint('admin_bp', __name__)
