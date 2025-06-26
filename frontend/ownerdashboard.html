@@ -259,6 +259,18 @@ header h1 {
 .token-button:hover {
   background-color: #ffba08;
 }
+.worker-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  padding: 16px;
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+}
+.worker-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
 
 </style>
 
@@ -317,9 +329,7 @@ header h1 {
 <button onclick="window.location.href='owner-application.html'" class="action-btn">
   <i class="bi bi-journal-text"></i> Received Applications
 </button>
-<button onclick="window.location.href='fetch-application.html'" class="action-btn">
-  <i class="bi bi-inbox-fill"></i> View Received Applications
-</button>
+
 <button id="watchAdBtnOwner" class="token-button">
   🎁 Watch Ad & Get 1 Token
 </button>
@@ -350,7 +360,7 @@ header h1 {
 <section class="worker-profiles">
   <h2><i class="bi bi-people"></i> Available Workers</h2>
   <div id="profiles-list" class="scroll-container"></div>
-  <div id="no-profiles" class="no-data">No worker profiles available currently.</div>
+  <div id="no-profiles" class="no-data"></div>
 </section>
 
 <footer class="footer">
@@ -751,3 +761,45 @@ async function deleteTender(tenderId) {
 document.getElementById("profileBtn").addEventListener("click", () => {
   loadPostedTenders();
 });
+async function loadAvailableWorkers() {
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    const res = await fetch("https://llts-app.onrender.com/api/owner/available-workers", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const data = await res.json();
+    const workers = data.workers || [];
+
+    const container = document.getElementById("profiles-list");
+    const emptyMsg = document.getElementById("no-profiles");
+
+    container.innerHTML = "";
+    emptyMsg.innerHTML = "";
+
+    if (workers.length === 0) {
+      emptyMsg.innerText = "No workers found.";
+      return;
+    }
+
+    workers.forEach(w => {
+      container.innerHTML += `
+        <div class="worker-card">
+          <h3>${w.name}</h3>
+          <p><strong>Category:</strong> ${w.category || "N/A"}</p>
+          <p><strong>Location:</strong> ${w.location || "N/A"}</p>
+          <p><strong>Contact:</strong> ${w.contact || "N/A"}</p>
+        </div>
+      `;
+    });
+
+  } catch (err) {
+    console.error("❌ Error loading workers:", err);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadAvailableWorkers);
