@@ -119,7 +119,11 @@ def get_all_auctions():
 # 🔨 DELETE TENDERS
 # =============================
 @admin_bp.route('/api/admin/delete-tender/<tender_id>', methods=['DELETE', 'OPTIONS'])
-@cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
+@cross_origin(
+    origins=["http://localhost:5500", "http://127.0.0.1:5500", "https://llts-app.onrender.com"],
+    supports_credentials=True
+)
+
 def admin_delete_tender(tender_id):
     if request.method == "OPTIONS":
         return jsonify({}), 200
