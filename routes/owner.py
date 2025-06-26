@@ -113,22 +113,30 @@ def get_owner_tenders():
 @owner_bp.route('/api/owner/delete-tender/<tender_id>', methods=['DELETE', 'OPTIONS'])
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
 def delete_tender(tender_id):
+    # ✅ Handle preflight request properly
     if request.method == "OPTIONS":
-        return jsonify({}), 200
-
-    from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
+        response = make_response()
+        response.headers.add("Access-Control-Allow-Origin", request.headers.get("Origin", "*"))
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+        response.headers.add("Access-Control-Allow-Methods", "DELETE,OPTIONS")
+        response.headers.add("Access-Control-Allow-Credentials", "true")
+        return response, 200
 
     try:
-        # Manually verify token (instead of decorator, so OPTIONS doesn't break)
+        # ✅ Check JWT token
         verify_jwt_in_request()
         owner_id = get_jwt_identity()
 
+        # ✅ Find tender by ID
         tender = mongo.db.tenders.find_one({"_id": ObjectId(tender_id)})
         if not tender:
             return jsonify({"status": "error", "message": "Tender not found"}), 404
+
+        # ✅ Verify ownership
         if tender.get("created_by") != str(owner_id):
             return jsonify({"status": "error", "message": "Unauthorized"}), 403
 
+        # ✅ Delete tender and related applications
         mongo.db.tenders.delete_one({"_id": ObjectId(tender_id)})
         mongo.db.applications.delete_many({"tender_id": ObjectId(tender_id)})
 
@@ -137,7 +145,6 @@ def delete_tender(tender_id):
     except Exception as e:
         print("❌ Error in delete_tender:", str(e))
         return jsonify({"status": "error", "message": str(e)}), 500
-
 # ✅ Accept Application
 @owner_bp.route('/accept-application/<app_id>', methods=['PATCH', 'OPTIONS'])
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)

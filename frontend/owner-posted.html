@@ -1,3 +1,4 @@
+<!-- 📋 Your Posted Tenders Page -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +12,7 @@
       font-family: 'Inter', sans-serif;
       background: #f2f4f8;
       margin: 0;
-      padding-top: 80px; /* space for fixed header */
+      padding-top: 80px;
     }
 
     header {
@@ -95,6 +96,21 @@
       color: #777;
       padding: 40px 0;
     }
+
+    .share-btn {
+      background-color: #eee;
+      color: #333;
+      font-size: 12px;
+      padding: 6px 10px;
+      margin: 5px 5px 0 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .share-btn:hover {
+      background-color: #ddd;
+    }
   </style>
 </head>
 <body>
@@ -103,9 +119,7 @@
   </header>
 
   <div class="section">
-    <div id="ownerTenderList" class="card-grid">
-      <!-- Tenders will be rendered here -->
-    </div>
+    <div id="ownerTenderList" class="card-grid"></div>
   </div>
 
   <script>
@@ -144,12 +158,17 @@
         ownerTenders.forEach(t => {
           tenderList.innerHTML += `
             <div class="card">
-              <h3>${t.title}</h3>
+              <h3 class="tender-title">${t.title}</h3>
               <p><strong>Category:</strong> ${t.category}</p>
               <p><strong>Budget:</strong> ₹${t.budget}</p>
               <p><strong>Location:</strong> ${t.location}</p>
               <p><strong>Deadline:</strong> ${new Date(t.deadline).toLocaleDateString()}</p>
               <button class="btn" onclick="deleteTender('${t._id}')">🗑 Delete</button>
+              <div class="share-buttons">
+                <button class="share-btn" onclick="shareTender(this, 'whatsapp')">📱 WhatsApp</button>
+                <button class="share-btn" onclick="shareTender(this, 'facebook')">📘 Facebook</button>
+                <button class="share-btn" onclick="shareTender(this, 'copy')">🔗 Copy Link</button>
+              </div>
             </div>
           `;
         });
@@ -166,9 +185,7 @@
       try {
         const res = await fetch(`https://llts-app.onrender.com/api/owner/delete-tender/${tenderId}`, {
           method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+          headers: { Authorization: `Bearer ${token}` }
         });
 
         const result = await res.json();
@@ -182,6 +199,35 @@
         console.error("Error deleting tender:", err);
         alert("Network error. Could not delete tender.");
       }
+    }
+
+    function getTenderDetails(button) {
+      const card = button.closest(".card");
+      const title = card.querySelector(".tender-title")?.innerText || "";
+      const category = card.querySelector("p:nth-of-type(1)")?.innerText || "";
+      const budget = card.querySelector("p:nth-of-type(2)")?.innerText || "";
+      const location = card.querySelector("p:nth-of-type(3)")?.innerText || "";
+      const deadline = card.querySelector("p:nth-of-type(4)")?.innerText || "";
+      return `🛠️ *${title}*\n${category}\n${budget}\n${location}\n${deadline}\nApply now via LLTS!`;
+    }
+
+    function shareTender(button, platform) {
+      const message = encodeURIComponent(getTenderDetails(button));
+      const pageURL = encodeURIComponent(window.location.href);
+
+      let shareURL = "";
+      if (platform === "whatsapp") {
+        shareURL = `https://wa.me/?text=${message}`;
+      } else if (platform === "facebook") {
+        shareURL = `https://www.facebook.com/sharer/sharer.php?u=${pageURL}&quote=${message}`;
+      } else if (platform === "copy") {
+        navigator.clipboard.writeText(decodeURIComponent(message + "\n" + window.location.href)).then(() => {
+          alert("🔗 Tender info copied! Share it anywhere.");
+        });
+        return;
+      }
+
+      window.open(shareURL, "_blank");
     }
 
     document.addEventListener("DOMContentLoaded", fetchOwnerTenders);
