@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
@@ -31,19 +31,31 @@ app.config["JWT_SECRET_KEY"] = os.getenv("SECRET_KEY") or "secret"
 jwt = JWTManager(app)
 
 # ✅ Allowed frontend origins
+ALLOWED_ORIGINS = [
+    "http://127.0.0.1:5500",
+    "http://localhost:5500",
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
+    "https://llts-app.onrender.com",
+    "https://spiffy-eclair-f0f49f.netlify.app"
+]
+
+# ✅ CORS Setup
 CORS(app,
-     resources={r"/api/*": {"origins": [
-         "http://127.0.0.1:5500",
-         "http://localhost:5500",
-         "http://127.0.0.1:8000",
-         "http://localhost:8000",
-         "https://llts-app.onrender.com",
-         "https://spiffy-eclair-f0f49f.netlify.app"
-     ]}},
+     resources={r"/api/*": {"origins": ALLOWED_ORIGINS}},
      supports_credentials=True,
      allow_headers=["Content-Type", "Authorization"],
      expose_headers=["Content-Type"],
      methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"])
+
+# ✅ Fallback to ensure proper Access-Control-Allow-Origin for credentials
+@app.after_request
+def apply_cors_headers(response):
+    origin = request.headers.get("Origin")
+    if origin in ALLOWED_ORIGINS:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+    return response
 
 # ✅ Register Blueprints
 app.register_blueprint(auth_bp, url_prefix='/api')
