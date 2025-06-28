@@ -82,7 +82,7 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
     const password = document.getElementById('password')?.value;
 
     if (!username || !password) {
-        alert('Please enter username and password.');
+        alert('Please enter both username and password.');
         return;
     }
 
@@ -96,13 +96,25 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
 
         const data = await response.json();
 
+        if (response.status === 403 && (data.message?.toLowerCase().includes("banned") || data.error?.includes("banned"))) {
+            alert("❌ You are officially banned from LLTS.\nPlease contact: lltsreportsspdevelopments@gmail.com");
+            return;
+        }
+
+        if (response.status === 401 || data.message?.toLowerCase().includes("invalid")) {
+            alert("❌ Wrong username or password.");
+            return;
+        }
+
         if (response.ok && data.token) {
-            localStorage.setItem('jwt', data.token);  // ✅ MATCHING
+            localStorage.setItem('jwt', data.token);
             localStorage.setItem('role', data.role);
             localStorage.setItem('username', username);
 
             const decoded = parseJwt(data.token);
-            if (decoded?.id) localStorage.setItem('owner_id', decoded.id);
+            if (decoded?.id || decoded?.sub) {
+                localStorage.setItem('owner_id', decoded.id || decoded.sub);
+            }
 
             const role = (data.role || decoded?.role || "").toLowerCase();
             if (role === 'owner') {
@@ -113,15 +125,28 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
                 alert('Login successful, but unknown role.');
             }
         } else {
-            alert(data.message || 'Invalid credentials.');
+            alert(data.message || 'Login failed. Please try again.');
         }
     } catch (err) {
-        console.error('❌ Error parsing JSON login response:', err);
-        const text = await response.text();
-        console.log('🔍 Raw response text:', text);
-        alert('Server error during login. Check console.');
+        console.error('❌ Error during login:', err);
+        alert('Server error. Please try again later.');
     }
 });
+
+// ✅ Helper for decoding JWT
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c =>
+            '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+        ).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (e) {
+        return {};
+    }
+}
+
 
 
 // ========== POST TENDER ==========

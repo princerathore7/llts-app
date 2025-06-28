@@ -2,178 +2,173 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Owner Login - LLTS</title>
-  
+
+  <!-- ✅ Font link for Android compatibility -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
   <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #2c3e50, #2980b9);
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
-  .app-name {
-    font-size: 42px;
-    font-weight: bold;
-    color: #f39c12;
-    text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
-    margin-bottom: 25px;
-    font-family: 'Georgia', serif;
-    letter-spacing: 2.5px;
-    animation: fadeIn 1s ease-out;
-  }
-
-  .login-container {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 40px 35px;
-    border-radius: 20px;
-    width: 360px;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
-    text-align: center;
-    animation: slideIn 0.8s ease-out;
-  }
-
-  .login-container h2 {
-    margin-bottom: 25px;
-    color: #ffffff;
-    font-weight: 600;
-    font-size: 28px;
-    letter-spacing: 1.5px;
-  }
-
-  label {
-    display: block;
-    text-align: left;
-    font-weight: 500;
-    margin-bottom: 8px;
-    color: #ecf0f1;
-    font-size: 15px;
-  }
-
-  input[type="text"],
-  input[type="password"] {
-    width: 100%;
-    padding: 13px 18px;
-    margin-bottom: 22px;
-    border: none;
-    border-radius: 12px;
-    font-size: 15px;
-    outline: none;
-    background-color: rgba(255, 255, 255, 0.85);
-    transition: all 0.3s ease;
-  }
-
-  input[type="text"]:focus,
-  input[type="password"]:focus {
-    box-shadow: 0 0 12px #3498dbaa;
-    background-color: #ffffff;
-  }
-
-  button.btn {
-    width: 100%;
-    background: #3498db;
-    color: white;
-    font-size: 17px;
-    padding: 14px;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.3s ease;
-  }
-
-  button.btn:hover {
-    background: #2c80b4;
-  }
-
-  .signup-btn {
-    padding: 11px 20px;
-    font-size: 15px;
-    border-radius: 10px;
-    background-color: #27ae60;
-    color: white;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-    margin-bottom: 20px;
-    transition: background-color 0.3s ease;
-  }
-
-  .signup-btn:hover {
-    background-color: #229954;
-  }
-
-  .forgot-password {
-    margin-top: 10px;
-    font-size: 14px;
-    color: #ecf0f1;
-    cursor: pointer;
-    text-decoration: underline;
-    transition: color 0.3s ease;
-  }
-
-  .forgot-password:hover {
-    color: #dcdde1;
-  }
-
-  .developer-credit {
-    margin-top: 25px;
-    font-size: 14px;
-    color: #f1c40f;
-    font-weight: 600;
-    font-family: 'Georgia', serif;
-    letter-spacing: 1px;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-    animation: fadeIn 2s ease;
-  }
-
-  @keyframes slideIn {
-    from {
-      transform: translateY(-40px);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0px);
-      opacity: 1;
-    }
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  @media (max-width: 420px) {
-    .login-container {
-      width: 85%;
-      padding: 30px 25px;
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #2c3e50, #2980b9);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      overflow-x: hidden;
     }
 
     .app-name {
-      font-size: 28px;
+      font-size: 42px;
+      font-weight: bold;
+      color: #f39c12;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+      margin-bottom: 25px;
+      font-family: 'Georgia', serif;
+      letter-spacing: 2.5px;
+      animation: fadeIn 1s ease-out;
+      text-align: center;
+      padding: 0 10px;
+    }
+
+    .login-container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 40px 35px;
+      border-radius: 20px;
+      width: 360px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      animation: slideIn 0.8s ease-out;
+      box-sizing: border-box;
     }
 
     .login-container h2 {
-      font-size: 24px;
+      margin-bottom: 25px;
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 28px;
+      letter-spacing: 1.5px;
     }
-  }
-</style>
 
+    label {
+      display: block;
+      text-align: left;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #ecf0f1;
+      font-size: 15px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 13px 18px;
+      margin-bottom: 22px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      outline: none;
+      background-color: rgba(255, 255, 255, 0.85);
+      transition: all 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      box-shadow: 0 0 12px #3498dbaa;
+      background-color: #ffffff;
+    }
+
+    button.btn {
+      width: 100%;
+      background: #3498db;
+      color: white;
+      font-size: 17px;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+
+    button.btn:hover {
+      background: #2c80b4;
+    }
+
+    .signup-btn {
+      padding: 11px 20px;
+      font-size: 15px;
+      border-radius: 10px;
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 20px;
+      transition: background-color 0.3s ease;
+    }
+
+    .signup-btn:hover {
+      background-color: #229954;
+    }
+
+    .forgot-password {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #ecf0f1;
+      cursor: pointer;
+      text-decoration: underline;
+      transition: color 0.3s ease;
+    }
+
+    .forgot-password:hover {
+      color: #dcdde1;
+    }
+
+    .developer-credit {
+      margin-top: 25px;
+      font-size: 14px;
+      color: #f1c40f;
+      font-weight: 600;
+      font-family: 'Georgia', serif;
+      letter-spacing: 1px;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+      animation: fadeIn 2s ease;
+      text-align: center;
+      padding: 0 10px;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-40px); opacity: 0; }
+      to { transform: translateY(0px); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 480px) {
+      .login-container {
+        width: 90%;
+        padding: 30px 20px;
+      }
+
+      .app-name {
+        font-size: 30px;
+      }
+
+      .login-container h2 {
+        font-size: 22px;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -182,7 +177,6 @@
   <div class="login-container">
     <h2>Owner Login</h2>
     
-    <!-- Signup button outside the form -->
     <button class="signup-btn" onclick="window.location.href='signup.html'">New user? Sign up..</button>
     
     <form id="ownerLoginForm">
@@ -194,13 +188,27 @@
 
       <button type="submit" class="btn">Login</button>
     </form>
+
     <a href="#" class="forgot-password">Forgot Password?</a>
   </div>
 
   <div class="developer-credit">Developed by Prince Sanjay Rathore</div>
-<script src="lltsscript.js"></script>
 
+  <script src="lltsscript.js"></script>
   <script>
+    function parseJwt(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        return JSON.parse(decodeURIComponent(atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join('')));
+      } catch (e) {
+        console.error("Failed to parse JWT:", e);
+        return {};
+      }
+    }
+
     document.getElementById('ownerLoginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -215,7 +223,10 @@
       try {
         const response = await fetch('https://llts-app.onrender.com/api/login', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include',
           body: JSON.stringify({ username, password })
         });
 
@@ -224,8 +235,8 @@
         if (response.ok) {
           localStorage.setItem('token', data.token || '');
           localStorage.setItem('role', data.role || '');
-const payload = parseJwt(data.token);
-  localStorage.setItem('owner_id', payload.sub);
+          const payload = parseJwt(data.token);
+          localStorage.setItem('owner_id', payload.sub);
           if (data.role === 'owner') {
             window.location.href = 'ownerdashboard.html';
           } else {
@@ -240,6 +251,5 @@ const payload = parseJwt(data.token);
       }
     });
   </script>
-
 </body>
 </html>

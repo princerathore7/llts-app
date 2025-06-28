@@ -4,7 +4,101 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Success</title>
-  <link rel="stylesheet" href="success.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #2c3e50, #00c897);
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .success-container {
+      max-width: 400px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 30px 20px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    .checkmark {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+    }
+
+    .checkmark svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .checkmark-circle {
+      stroke: #fff;
+      stroke-width: 3;
+      stroke-dasharray: 166;
+      stroke-dashoffset: 166;
+      stroke-linecap: round;
+      animation: circle-animation 0.6s ease-out forwards;
+    }
+
+    .checkmark-check {
+      stroke: #00ffcc;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 48;
+      stroke-dashoffset: 48;
+      animation: check-animation 0.4s 0.6s ease forwards;
+    }
+
+    @keyframes circle-animation {
+      to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes check-animation {
+      to { stroke-dashoffset: 0; }
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+    }
+
+    #success-message {
+      font-size: 1rem;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .redirecting {
+      font-size: 0.95rem;
+      opacity: 0.8;
+    }
+
+    @media (max-width: 480px) {
+      h2 {
+        font-size: 1.5rem;
+      }
+      #success-message {
+        font-size: 0.95rem;
+      }
+      .redirecting {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="success-container">
@@ -21,7 +115,6 @@
     </div>
   </div>
 
-  <!-- Redirect after 3 seconds -->
   <script>
     setTimeout(() => {
       window.location.href = "worker-dashboard.html";

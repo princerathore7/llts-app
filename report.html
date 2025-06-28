@@ -1,73 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Report a Tender - LLTS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: #0f0;
-      padding: 30px;
+      font-family: 'Inter', sans-serif;
+      background: #0f1115;
+      color: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 620px;
+      margin: 0 auto;
+      background: #1a1d23;
+      border-radius: 14px;
+      padding: 30px 20px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     }
 
     h1 {
-      color: #0f0;
+      text-align: center;
+      color: #00e676;
+      margin-bottom: 25px;
+      font-size: 1.9rem;
     }
 
     .instructions {
-      background: #222;
+      background: #262a34;
+      border-left: 5px solid #00e676;
       padding: 20px;
-      border: 1px solid #0f0;
+      border-radius: 10px;
       margin-bottom: 30px;
     }
 
-    button {
-      background: #0f0;
-      color: #000;
-      padding: 12px 20px;
-      font-size: 16px;
-      border: none;
-      cursor: pointer;
-      margin-top: 20px;
-      border-radius: 5px;
+    .instructions p {
+      margin-bottom: 10px;
     }
 
-    button:hover {
-      background: #39ff14;
+    ul {
+      padding-left: 20px;
+      margin-bottom: 20px;
+    }
+
+    li {
+      margin-bottom: 6px;
+      line-height: 1.5;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background-color: #00e676;
+      color: #111;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #00c960;
     }
 
     .footer {
-      margin-top: 40px;
-      font-size: 13px;
-      color: #999;
+      text-align: center;
+      font-size: 0.9rem;
+      margin-top: 30px;
+      color: #bbb;
+    }
+
+    .back-btn {
+      display: inline-block;
+      margin-bottom: 25px;
+      color: #00e676;
+      font-weight: 500;
+      text-decoration: none;
+      background-color: transparent;
+      border: 2px solid #00e676;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      background-color: #00e676;
+      color: #111;
+    }
+
+    @media (max-width: 500px) {
+      .container {
+        padding: 20px 15px;
+      }
+
+      h1 {
+        font-size: 1.6rem;
+      }
+
+      .btn, .back-btn {
+        font-size: 15px;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>🚩 Report a Tender</h1>
 
-  <div class="instructions">
-    <p>Please make sure your report contains:</p>
-    <ul>
-      <li>🔹 Valid reason (e.g. fake tender, scam, abusive behavior)</li>
-      <li>🔹 Screenshots of chat (WhatsApp or app)</li>
-      <li>🔹 Mention of tender title or tender ID</li>
-      <li>🔹 Owner name or ID if possible</li>
-    </ul>
+  <div class="container">
+    <a href="worker-dashboard.html" class="back-btn">⬅ Back to Dashboard</a>
+    <h1>🚩 Report a Tender</h1>
 
-    <p>Examples of reportable issues:</p>
-    <ul>
-      <li>❌ Tender created but owner doesn't respond or denies giving work</li>
-      <li>❌ Owner used offensive language</li>
-      <li>❌ Promoting illegal/nudity/inappropriate content</li>
-      <li>❌ Misleading or fake budget promises</li>
-    </ul>
+    <div class="instructions">
+      <p>📋 Please make sure your report includes:</p>
+      <ul>
+        <li>🔹 Valid reason (e.g. fake tender, scam, abusive behavior)</li>
+        <li>🔹 Screenshots of chat (WhatsApp or app)</li>
+        <li>🔹 Mention tender title or tender ID</li>
+        <li>🔹 Owner name or ID if possible</li>
+      </ul>
+
+      <p>🚫 Examples of reportable issues:</p>
+      <ul>
+        <li>❌ Owner doesn't respond or refuses to assign work</li>
+        <li>❌ Owner used abusive language</li>
+        <li>❌ Misleading, fake, or illegal tender</li>
+      </ul>
+    </div>
+
+    <button class="btn" id="sendReportBtn">📨 Send Report via Email</button>
+
+    <div class="footer">
+      ⏳ Admin will verify each report manually within 48 hours.
+    </div>
   </div>
-
-  <button id="sendReportBtn">📨 Send Report via Email</button>
-
-  <div class="footer">Note: Admin will verify every report manually within 48 hours.</div>
 
   <script>
     const params = new URLSearchParams(window.location.search);
@@ -80,23 +156,21 @@
       const body = encodeURIComponent(`
 Hello Admin,
 
-I would like to report a tender posted on the LLTS platform.
+I would like to report a tender on the LLTS platform.
 
 🔹 Tender ID: ${tenderId}
 🔹 My User ID: ${reporterId}
 
 Reason:
-[Please write your complaint here - e.g. scam, no work assigned, rude behavior, fake budget]
+[Write your complaint here - e.g. scam, no work assigned, rude behavior, fake budget]
 
 Attachments:
-(Please attach WhatsApp screenshots or any proof before sending this email)
+(Attach WhatsApp screenshots or any other proof before sending this email)
 
-Thanks,
+Regards,
 [Your Name]
       `);
-
-      const mailtoLink = `mailto:${email}?subject=${subject}&body=${body}`;
-      window.location.href = mailtoLink;
+      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
     });
   </script>
 </body>

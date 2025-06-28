@@ -4,8 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Welcome to LLTS</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+  <!-- Font & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
   <style>
     * {
       margin: 0;
@@ -13,23 +16,25 @@
       box-sizing: border-box;
     }
 
-    html, body {
-      height: 100%;
+    body {
+      height: 100vh;
       font-family: 'Space Grotesk', sans-serif;
       background: radial-gradient(ellipse at center, #101d2d, #0a0f1a);
       color: white;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      flex-direction: column;
+      overflow-x: hidden;
+      padding: 16px;
     }
 
     .glow-circle {
       position: absolute;
-      width: 400px;
-      height: 400px;
+      width: 350px;
+      height: 350px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,212,59,0.4), transparent);
+      background: radial-gradient(circle, rgba(255,212,59,0.3), transparent);
       animation: pulse 6s infinite;
       z-index: 0;
     }
@@ -42,25 +47,25 @@
 
     .container {
       position: relative;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 3rem;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 2rem 1.5rem;
       border-radius: 20px;
-      backdrop-filter: blur(16px);
+      backdrop-filter: blur(14px);
       box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
       text-align: center;
       z-index: 2;
-      max-width: 500px;
-      width: 90%;
+      max-width: 450px;
+      width: 100%;
     }
 
     .container h1 {
-      font-size: 2.5rem;
+      font-size: 2.2rem;
       margin-bottom: 1rem;
       color: #fdd835;
     }
 
     .container p {
-      font-size: 1.1rem;
+      font-size: 1rem;
       margin-bottom: 2rem;
       color: #e0e0e0;
     }
@@ -68,60 +73,67 @@
     .btns {
       display: flex;
       justify-content: center;
-      gap: 1.2rem;
       flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
     }
 
     .btn {
       background: #fdd835;
       color: #111;
       border: none;
-      padding: 0.9rem 1.8rem;
+      padding: 0.9rem 1.5rem;
       border-radius: 12px;
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
+      width: 100%;
+      max-width: 200px;
     }
 
     .btn:hover {
       background-color: #fff350;
-      transform: translateY(-3px);
+      transform: translateY(-2px);
     }
 
     .footer {
-      margin-top: 2rem;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       color: #ccc;
+      margin-top: 10px;
+      line-height: 1.4;
     }
 
     .countdown {
-      margin-top: 1rem;
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: #bbb;
+      margin-top: 10px;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 480px) {
       .container h1 {
-        font-size: 2rem;
+        font-size: 1.8rem;
+      }
+
+      .container p {
+        font-size: 0.95rem;
       }
 
       .btn {
-        width: 100%;
+        font-size: 1rem;
         padding: 1rem;
-      }
-
-      .btns {
-        flex-direction: column;
-        gap: 1rem;
+        width: 100%;
       }
     }
   </style>
 </head>
 <body>
-  <div class="glow-circle" style="top: 10%; left: 10%;"></div>
-  <div class="glow-circle" style="bottom: 10%; right: 15%;"></div>
 
+  <!-- Background Effects -->
+  <div class="glow-circle" style="top: 10%; left: 5%;"></div>
+  <div class="glow-circle" style="bottom: 10%; right: 5%;"></div>
+
+  <!-- Welcome Container -->
   <div class="container">
     <h1>🚀 Welcome to LLTS</h1>
     <p>Empowering Bharat, One Tender at a Time</p>
@@ -140,7 +152,7 @@
     </div>
 
     <div class="footer">
-      Powered by <strong>Prince Kumar Rathore</strong> <br>
+      Powered by <strong>Prince Kumar Rathore</strong><br>
       <small>"Real heroes wear boots, not capes."</small>
     </div>
   </div>

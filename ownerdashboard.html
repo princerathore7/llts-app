@@ -271,6 +271,73 @@ header h1 {
   transform: translateY(-4px);
   box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
+/* 📱 Responsive Fixes */
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 2rem;
+  }
+
+  .subtext {
+    font-size: 1rem;
+    padding: 0 1rem;
+  }
+
+  #profileBtn {
+    top: 1rem;
+    right: 1rem;
+    width: 48px;
+    height: 48px;
+  }
+
+  #profileBtn i {
+    font-size: 20px;
+  }
+
+  .action-btn, .logout-btn {
+    font-size: 0.95rem;
+    padding: 0.7rem 1.2rem;
+    margin: 0.3rem;
+  }
+
+  .modal-content {
+    padding: 1.2rem;
+    max-width: 90%;
+  }
+
+  .worker-card {
+    max-width: 95%;
+    margin: 12px auto;
+  }
+}
+
+/* 🎨 Improve Readability and Spacing */
+.owner-dashboard {
+  max-width: 1200px;
+  margin: auto;
+}
+
+.section h3 {
+  font-size: 1.4rem;
+}
+
+.post-list {
+  padding-left: 0;
+  list-style-type: none;
+}
+
+/* 🛑 Fix: Remove duplicated .worker-card declaration — keep this one */
+.worker-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(6px);
+  border-radius: 18px;
+  padding: 1.5rem;
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  margin: 1rem auto;
+  max-width: 100%;
+  transition: transform 0.3s ease;
+}
 
 </style>
 

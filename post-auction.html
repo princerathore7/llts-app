@@ -204,45 +204,54 @@ const API_BASE = "http://localhost:5000/api";
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🔨 Auction Coming Soon</title>
   <style>
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
+      padding: 0;
+    }
+
+    body {
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #f9f9f9, #e0e0e0);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    .logo {
-      font-size: 42px;
-      font-weight: bold;
-      color: #ff9900;
-      animation: pulse 2s infinite;
-      margin-bottom: 20px;
+      min-height: 100vh;
+      text-align: center;
+      padding: 20px;
     }
 
     .hammer {
-      font-size: 60px;
+      font-size: 64px;
       animation: bounce 1.5s infinite;
+      color: #ff8c00;
+      margin-bottom: 10px;
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #ff9900;
+      animation: pulse 2s infinite;
+      margin-bottom: 16px;
     }
 
     .message {
-      font-size: 20px;
+      font-size: 1.1rem;
       color: #333;
-      text-align: center;
       max-width: 500px;
-      margin: 20px;
+      margin: 0 auto 30px;
+      line-height: 1.6;
     }
 
     .footer {
-      margin-top: 40px;
-      font-size: 16px;
-      color: #666;
+      font-size: 0.95rem;
+      color: #777;
+      margin-top: auto;
     }
 
     @keyframes bounce {
@@ -250,7 +259,7 @@ const API_BASE = "http://localhost:5000/api";
         transform: translateY(0);
       }
       50% {
-        transform: translateY(-12px);
+        transform: translateY(-10px);
       }
     }
 
@@ -262,6 +271,25 @@ const API_BASE = "http://localhost:5000/api";
         opacity: 0.6;
       }
     }
+
+    @media (max-width: 480px) {
+      .logo {
+        font-size: 1.7rem;
+      }
+
+      .message {
+        font-size: 1rem;
+        padding: 0 10px;
+      }
+
+      .footer {
+        font-size: 0.85rem;
+      }
+
+      .hammer {
+        font-size: 50px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -271,8 +299,8 @@ const API_BASE = "http://localhost:5000/api";
   <div class="logo">COMING SOON</div>
 
   <div class="message">
-    <strong>The "Boli" and Auction feature</strong> will be implemented in future updates.<br/>
-    Keep supporting <strong>S&P Developments</strong> as we continue to grow!
+    <strong>The "Boli" and Auction feature</strong> is under development and will be launched in future updates.<br/>
+    Thank you for supporting <strong>S&P Developments</strong>!
   </div>
 
   <div class="footer">© 2025 LLTS | Powered by S&P Developments</div>
