@@ -48,13 +48,15 @@ CORS(app,
      expose_headers=["Content-Type"],
      methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"])
 
-# ✅ Fallback to ensure proper Access-Control-Allow-Origin for credentials
+# ✅ Fallback for OPTIONS preflight headers
 @app.after_request
 def apply_cors_headers(response):
     origin = request.headers.get("Origin")
     if origin in ALLOWED_ORIGINS:
         response.headers["Access-Control-Allow-Origin"] = origin
         response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, PATCH, DELETE, OPTIONS"
     return response
 
 # ✅ Register Blueprints
