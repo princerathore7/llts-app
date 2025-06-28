@@ -42,7 +42,7 @@ ALLOWED_ORIGINS = [
 
 # ✅ CORS Setup (r prefix is very important!)
 CORS(app,
-     resources={r"/api/*": {"origins": ALLOWED_ORIGINS}},
+      origins="*",
      supports_credentials=True,
      allow_headers=["Content-Type", "Authorization"],
      expose_headers=["Content-Type"],
