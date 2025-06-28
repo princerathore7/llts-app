@@ -315,7 +315,7 @@ document.getElementById('new-user-btn')?.addEventListener('click', () => {
 window.fetchAndRenderTenders = fetchAndRenderTenders;
 window.fetchAndRenderAuctions = fetchAndRenderAuctions;
 window.applyForTender = applyForTender;
-window.fetchAndRenderApplications = fetchAndRenderApplications;
+//window.fetchAndRenderApplications = fetchAndRenderApplications;
 window.openApplicationsModal = openApplicationsModal;
 
 // ✅ Fetch and Render Received Applications
