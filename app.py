@@ -40,15 +40,15 @@ ALLOWED_ORIGINS = [
     "https://spiffy-eclair-f0f49f.netlify.app"
 ]
 
-# ✅ CORS Setup
+# ✅ CORS Setup - UNIVERSAL
 CORS(app,
-     resources={r"/api/*": {"origins": ALLOWED_ORIGINS}},
+     resources={r"/*": {"origins": ALLOWED_ORIGINS}},
      supports_credentials=True,
      allow_headers=["Content-Type", "Authorization"],
      expose_headers=["Content-Type"],
      methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"])
 
-# ✅ Fallback for OPTIONS preflight headers
+# ✅ Add CORS headers after every response
 @app.after_request
 def apply_cors_headers(response):
     origin = request.headers.get("Origin")
@@ -67,7 +67,7 @@ app.register_blueprint(auction_bp, url_prefix='/api')
 app.register_blueprint(owner_bp, url_prefix='/api/owner')
 app.register_blueprint(admin_bp, url_prefix='/api/admin')
 app.register_blueprint(report_bp, url_prefix='/api')
-app.register_blueprint(token_bp, url_prefix="/api/token")
+app.register_blueprint(token_bp, url_prefix='/api/token')
 app.register_blueprint(razorpay_bp)
 
 # ✅ JWT Error Handling
