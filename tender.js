@@ -126,8 +126,8 @@ function filterTendersByCategory(category) {
 
 // ✅ Apply logic
 function applyForTender(tenderId, ownerPhone, tenderTitle) {
-  if (!tenderId || !ownerPhone) {
-    console.error("❌ Missing tender ID or owner phone");
+  if (!tenderId || !ownerPhone || ownerPhone === "919999999999") {
+    alert("❌ Tender owner's contact number is unavailable at the moment.");
     return;
   }
 
@@ -135,7 +135,7 @@ function applyForTender(tenderId, ownerPhone, tenderTitle) {
   localStorage.setItem("selectedOwnerPhone", ownerPhone);
   localStorage.setItem("selectedTenderTitle", tenderTitle);
 
-  console.log("✅ Saved tender ID, phone & title to localStorage.");
+  console.log("✅ Saved to localStorage:", { tenderId, ownerPhone, tenderTitle });
   window.location.href = "apply.html";
 }
 
