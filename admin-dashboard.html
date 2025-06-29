@@ -364,21 +364,37 @@
   }
 
   async function deleteTenderByAdmin(tenderId) {
-    const confirmDelete = confirm("⚠️ Are you sure you want to delete this tender? This action cannot be undone.");
-    if (!confirmDelete) return;
+  const confirmDelete = confirm("⚠️ Are you sure you want to delete this tender? This action cannot be undone.");
+  if (!confirmDelete) return;
 
-    try {
-      const res = await fetch(`${API_BASE}/admin/delete-tender/${tenderId}`, {
-        method: 'DELETE'
-      });
-      const result = await res.json();
-      alert(result.message || "Tender deleted.");
-      fetchAndRender('admin/all-tenders', 'tender-list', 'tender');
-    } catch (err) {
-      console.error("❌ Admin tender delete failed:", err);
-      alert("Something went wrong while deleting.");
-    }
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("❌ Admin not authenticated. Please login.");
+    return;
   }
+
+  try {
+    const res = await fetch(`${API_BASE}/admin/delete-tender/${tenderId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const result = await res.json();
+    if (res.ok) {
+      alert(`✅ ${result.message}`);
+      fetchAndRender('admin/all-tenders', 'tender-list', 'tender');
+    } else {
+      alert(`❌ ${result.message || "Failed to delete"}`);
+    }
+  } catch (err) {
+    console.error("❌ Admin tender delete failed:", err);
+    alert("Something went wrong while deleting.");
+  }
+}
+
 
   async function giftTokens() {
     const identifier = document.getElementById("gift-identifier").value.trim();

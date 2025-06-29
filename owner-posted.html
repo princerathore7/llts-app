@@ -4,6 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>📋 Your Posted Tenders</title>
+
+  <!-- ✅ AdSense Meta & Script -->
+  <meta name="google-adsense-account" content="ca-pub-7342369119079593">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7342369119079593"
+     crossorigin="anonymous"></script>
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
   <style>
     * {
@@ -34,6 +40,14 @@
       margin: 0;
       font-size: 22px;
       letter-spacing: 0.5px;
+    }
+
+    /* ✅ Ad container style (optional) */
+    .ad-container {
+      max-width: 1200px;
+      margin: 20px auto 0;
+      padding: 0 16px;
+      text-align: center;
     }
 
     .section {
@@ -136,9 +150,24 @@
   </style>
 </head>
 <body>
+
   <header>
     <h1>📋 Your Posted Tenders</h1>
   </header>
+
+  <!-- ✅ AdSense ad block below header -->
+  <div class="ad-container">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-7342369119079593"
+         data-ad-slot="1234567890"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+
 
   <div class="section">
     <div id="ownerTenderList" class="card-grid"></div>

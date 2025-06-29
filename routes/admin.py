@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from mongo import mongo
 from bson import ObjectId
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
-from flask_cors import cross_origin  # ✅ THIS IS REQUIRED
+from flask_cors import cross_origin
 from models.token import add_tokens
 
 admin_bp = Blueprint('admin_bp', __name__)
@@ -116,14 +116,13 @@ def get_all_auctions():
     return jsonify({"status": "success", "auctions": auctions}), 200
 
 # =============================
-# 🔨 DELETE TENDERS
+# 🔨 DELETE TENDERS ✅ FIXED ROUTE
 # =============================
-@admin_bp.route('/api/admin/delete-tender/<tender_id>', methods=['DELETE', 'OPTIONS'])
+@admin_bp.route('/delete-tender/<tender_id>', methods=['DELETE', 'OPTIONS'])
 @cross_origin(
     origins=["http://localhost:5500", "http://127.0.0.1:5500", "https://llts-app.onrender.com"],
     supports_credentials=True
 )
-
 def admin_delete_tender(tender_id):
     if request.method == "OPTIONS":
         return jsonify({}), 200
@@ -147,7 +146,6 @@ def admin_delete_tender(tender_id):
     except Exception as e:
         print("❌ Error deleting tender (admin):", str(e))
         return jsonify({"status": "error", "message": str(e)}), 500
-
 
 # =============================
 # 🚀 ADMIN: Grant Tokens to Any User
