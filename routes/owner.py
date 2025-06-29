@@ -281,3 +281,35 @@ def get_owner_received_applications():
     except Exception as e:
         print("❌ Error in /my-applications:", e)
         return jsonify({"error": "Server error", "details": str(e)}), 500
+@owner_bp.route("/api/owner/update-profile", methods=["PUT", "OPTIONS"])
+@jwt_required()
+@cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
+def update_owner_profile():
+    if request.method == "OPTIONS":
+        return jsonify({}), 200  # ✅ Handle CORS preflight request
+
+    try:
+        user_id = get_jwt_identity()
+        data = request.get_json()
+
+        update_data = {}
+        for field in ["name", "phone", "location", "profile_img"]:
+            if data.get(field):
+                update_data[field] = data[field]
+
+        if not update_data:
+            return jsonify({"error": "No valid fields to update"}), 400
+
+        result = mongo.db.users.update_one(
+            {"_id": ObjectId(user_id), "role": "owner"},
+            {"$set": update_data}
+        )
+
+        if result.modified_count == 0:
+            return jsonify({"error": "Nothing updated"}), 400
+
+        return jsonify({"msg": "Profile updated successfully"}), 200
+
+    except Exception as e:
+        print("❌ Error updating profile:", e)
+        return jsonify({"error": "Server error", "details": str(e)}), 500
