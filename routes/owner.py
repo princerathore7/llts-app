@@ -116,7 +116,7 @@ def get_owner_tenders():
 @jwt_required()
 def delete_tender(tender_id):
     if request.method == "OPTIONS":
-        return '', 200
+        return jsonify({}), 200
 
     try:
         owner_id = get_jwt_identity()
