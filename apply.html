@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Apply for Tender</title>
   <link rel="stylesheet" href="apply.css" />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7342369119079593"
-     crossorigin="anonymous"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7342369119079593" crossorigin="anonymous"></script>
 </head>
 <body>
   <div class="overlay">
@@ -17,7 +16,7 @@
         <label for="fullName">👤 Full Name</label>
         <input type="text" id="fullName" name="fullName" placeholder="Your full name" required />
 
-        <label for="mobile">📱 Mobile Number</label>
+        <label for="mobile">📱 Your Mobile Number</label>
         <input type="tel" id="mobile" name="mobile" placeholder="e.g. 9876543210" required />
 
         <label for="amount">💰 Expected Amount (₹)</label>
@@ -26,90 +25,34 @@
         <label for="message">🗒️ Why should we choose you?</label>
         <textarea id="message" name="message" rows="4" placeholder="Briefly explain your suitability..." required></textarea>
 
-        <button type="submit" id="apply-btn" class="submit-btn">🚀 Submit Application</button>
+        <button type="submit" id="apply-btn" class="submit-btn">📲 Contact via WhatsApp</button>
       </form>
     </div>
   </div>
 
   <script>
-    function parseJwt(token) {
-      try {
-        return JSON.parse(atob(token.split('.')[1]));
-      } catch (e) {
-        return null;
-      }
-    }
-
-    document.getElementById('applyForm').addEventListener('submit', async function (e) {
+    document.getElementById("applyForm").addEventListener("submit", function (e) {
       e.preventDefault();
 
-      const tenderId = localStorage.getItem("selectedTenderId");
-      if (!tenderId) {
-        alert("Tender ID not found.");
+      const fullName = document.getElementById("fullName").value.trim();
+      const mobile = document.getElementById("mobile").value.trim();
+      const amount = document.getElementById("amount").value.trim();
+      const message = document.getElementById("message").value.trim();
+
+      const ownerPhone = localStorage.getItem("selectedOwnerPhone"); // 📞 E.g., 919876543210
+      const tenderTitle = localStorage.getItem("selectedTenderTitle") || "your tender";
+
+      if (!ownerPhone) {
+        alert("Owner contact number not found.");
         return;
       }
 
-      const fullName = document.getElementById('fullName').value.trim();
-      const mobile = document.getElementById('mobile').value.trim();
-      const amount = parseFloat(document.getElementById('amount').value.trim());
-      const message = document.getElementById('message').value.trim();
-      const token = localStorage.getItem("token");
+      const whatsappMessage = 
+        `Hi, I'm ${fullName} (📱 ${mobile}).\nI'm interested in your tender titled "${tenderTitle}".\n` +
+        `💰 My quote: ₹${amount}\n📝 Reason: ${message}`;
 
-      if (!token) {
-        alert("You must be logged in.");
-        return;
-      }
-
-      const payload = parseJwt(token);
-      const workerId = payload?.sub;
-
-      if (!workerId) {
-        alert("Invalid or expired token.");
-        return;
-      }
-
-      const btn = document.getElementById("apply-btn");
-      btn.disabled = true;
-      btn.textContent = "Submitting...";
-
-      try {
-        const res = await fetch("https://llts-app.onrender.com/api/worker/apply-tender", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            tender_id: tenderId,
-            worker_name: fullName,
-            contact: mobile,
-            quoted_price: amount,
-            message: message,
-          }),
-        });
-
-        const data = await res.json();
-
-        if (res.status === 409) {
-          alert("⚠️ You have already applied to this tender.");
-          return;
-        }
-
-        if (res.ok) {
-          localStorage.removeItem("selectedTenderId");
-
-          // ✅ Redirect to success.html
-          window.location.href = "success.html";
-        } else {
-          alert(data.message || "Failed to submit application.");
-        }
-      } catch (err) {
-        console.error("Application error:", err);
-        alert("Something went wrong while applying!");
-      } finally {
-        btn.disabled = false;
-        btn.textContent = "🚀 Submit Application";
-      }
+      const whatsappURL = `https://wa.me/${ownerPhone}?text=${encodeURIComponent(whatsappMessage)}`;
+      window.open(whatsappURL, '_blank');
     });
   </script>
 </body>

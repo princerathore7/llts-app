@@ -7,7 +7,6 @@ from flask_cors import cross_origin
 
 tender_bp = Blueprint('tender', __name__)
 
-# ✅ ALLOWED ORIGINS for local + live server
 ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
@@ -35,6 +34,10 @@ def post_tender():
             if not data.get(field):
                 return jsonify({"error": f"{field} is required"}), 400
 
+        # ✅ Fetch phone number from user profile
+        user = mongo.db.users.find_one({"_id": ObjectId(current_user)})
+        owner_phone = user.get("phone", "919999999999") if user else "919999999999"
+
         tender = {
             "title": data["title"],
             "description": data["description"],
@@ -43,6 +46,7 @@ def post_tender():
             "deadline": data["deadline"],
             "category": data["category"],
             "created_by": str(current_user),
+            "owner_phone": owner_phone,
             "date_posted": datetime.utcnow()
         }
 
@@ -56,6 +60,7 @@ def post_tender():
     except Exception as e:
         print("❌ Error posting tender:", e)
         return jsonify({"error": "Internal Server Error"}), 500
+
 
 # ------------------------------------------------------------------
 # ✅ GET /api/get-tenders - Get all tenders and auctions
@@ -106,6 +111,7 @@ def get_all_tenders_and_auctions():
                 "category": tender.get("category", "General"),
                 "owner": owner_name,
                 "owner_id": owner_id,
+                "owner_phone": tender.get("owner_phone", "919999999999"),  # ✅ included
                 "type": "tender"
             })
 
@@ -151,6 +157,7 @@ def get_all_tenders_and_auctions():
         print("❌ Error fetching tenders/auctions:", e)
         return jsonify({"error": "Internal Server Error"}), 500
 
+
 # --------------------------------------------------------
 # ✅ DELETE /api/delete-tender/<tender_id> - Delete tender
 # --------------------------------------------------------
@@ -162,7 +169,7 @@ def delete_tender(tender_id):
         current_user = get_jwt_identity()
         result = mongo.db.tenders.delete_one({
             "_id": ObjectId(tender_id),
-            "created_by": str(current_user)  # ✅ fixed here
+            "created_by": str(current_user)
         })
 
         if result.deleted_count == 1:
@@ -173,4 +180,3 @@ def delete_tender(tender_id):
     except Exception as e:
         print("❌ Error deleting tender:", e)
         return jsonify({"error": "Internal Server Error"}), 500
-

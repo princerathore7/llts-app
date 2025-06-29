@@ -22,23 +22,25 @@ function displayTenders(tenders) {
     card.className = "card";
 
     const ownerId = tender.created_by || "Unknown";
+    const ownerPhone = tender.owner_phone || "919999999999"; // ✅ Ensure this is coming from DB
+    const tenderTitle = tender.title || "Untitled";
 
     card.innerHTML = `
-  <h3>${tender.title}</h3>
-  <p><strong>Owner ID:</strong> ${tender.owner_id}</p>
-  <p>${tender.description}</p>
-  <p><strong>Budget:</strong> ₹${tender.budget}</p>
-  <p><strong>Location:</strong> ${tender.location}</p>
-  <p><strong>Deadline:</strong> ${formatDate(tender.deadline)}</p>
-  <p><strong>Category:</strong> ${tender.category}</p>
-   <button class="btn" onclick="applyForTender('${tender._id}')">🚀 Apply Now</button>
-  <button class="btn btn-report" onclick="reportTender('${tender._id}', '${ownerId}')">🚩 Report</button>
-`;
-
+      <h3>${tenderTitle}</h3>
+      <p><strong>Owner ID:</strong> ${tender.owner_id || 'Unknown'}</p>
+      <p>${tender.description}</p>
+      <p><strong>Budget:</strong> ₹${tender.budget}</p>
+      <p><strong>Location:</strong> ${tender.location}</p>
+      <p><strong>Deadline:</strong> ${formatDate(tender.deadline)}</p>
+      <p><strong>Category:</strong> ${tender.category}</p>
+      <button class="btn" onclick="applyForTender('${tender._id}', '${ownerPhone}', \`${tenderTitle}\`)">📲 Apply via WhatsApp</button>
+      <button class="btn btn-report" onclick="reportTender('${tender._id}', '${ownerId}')">🚩 Report</button>
+    `;
 
     tenderList.appendChild(card);
   });
 }
+
 
 // ✅ Render auction cards (unchanged)
 function displayAuctions(auctions) {
@@ -123,16 +125,21 @@ function filterTendersByCategory(category) {
 }
 
 // ✅ Apply logic
-function applyForTender(tenderId) {
-  if (!tenderId) {
-    console.error("❌ Invalid tender ID");
+function applyForTender(tenderId, ownerPhone, tenderTitle) {
+  if (!tenderId || !ownerPhone) {
+    console.error("❌ Missing tender ID or owner phone");
     return;
   }
 
   localStorage.setItem("selectedTenderId", tenderId);
-  console.log("✅ Tender ID stored:", tenderId);
+  localStorage.setItem("selectedOwnerPhone", ownerPhone);
+  localStorage.setItem("selectedTenderTitle", tenderTitle);
+
+  console.log("✅ Saved tender ID, phone & title to localStorage.");
   window.location.href = "apply.html";
 }
+
+
 
 // 🚩 Report tender logic
 function reportTender(tenderId) {
