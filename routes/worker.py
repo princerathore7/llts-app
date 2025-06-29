@@ -156,20 +156,20 @@ def apply_tender():
         if tender.get("status") == "disabled":
             return jsonify({"error": "Tender is no longer active"}), 403
 
-        # ✅ Check token balance
+        # ✅ Check token balance (5 tokens for WhatsApp apply)
         token_info = get_token_record(user_id, "worker")
-        if not token_info or token_info.get("tokens", 0) < 3:
-            return jsonify({"error": "You need at least 3 tokens to apply. Please recharge."}), 402
+        if not token_info or token_info.get("tokens", 0) < 5:
+            return jsonify({"error": "You need at least 5 tokens to apply via WhatsApp. Please recharge."}), 402
 
-        # ✅ Check if already applied
+        # ✅ Prevent duplicate applications
         existing = mongo.db.applications.find_one({
             "tender_id": tender_obj_id,
             "worker_id": ObjectId(user_id)
         })
         if existing:
-            return jsonify({"error": "Already applied."}), 409
+            return jsonify({"error": "Already applied to this tender."}), 409
 
-        # ✅ Save application
+        # ✅ Save application (basic, even if it's WhatsApp-based)
         mongo.db.applications.insert_one({
             "tender_id": tender_obj_id,
             "worker_id": ObjectId(user_id),
@@ -179,13 +179,14 @@ def apply_tender():
             "quoted_price": quoted_price,
             "message": message,
             "status": "pending",
-            "applied_at": datetime.utcnow()
+            "applied_at": datetime.utcnow(),
+            "via": "whatsapp"  # ✅ optional: track method of application
         })
 
-        # ✅ Decrement 3 tokens after success
+        # ✅ Deduct 5 tokens for WhatsApp-based apply
         mongo.db.tokens.update_one(
             {"user_id": str(user_id), "role": "worker"},
-            {"$inc": {"tokens": -3}}
+            {"$inc": {"tokens": -5}}
         )
 
         return jsonify({"msg": "Application submitted successfully"}), 200
@@ -193,6 +194,7 @@ def apply_tender():
     except Exception as e:
         print("❌ ERROR in apply-tender:", str(e))
         return jsonify({"error": "Server error", "details": str(e)}), 500
+
 # ========================= 🔢 GET COUNT OF APPLIED TENDERS =========================
 @worker_bp.route('/applied-count', methods=['GET'])
 @jwt_required()

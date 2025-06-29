@@ -21,6 +21,7 @@ ALLOWED_ORIGINS = [
 @tender_bp.route("/tenders", methods=["POST", "OPTIONS"])
 @jwt_required()
 @cross_origin(origins=ALLOWED_ORIGINS)
+
 def post_tender():
     try:
         data = request.json
@@ -111,7 +112,8 @@ def get_all_tenders_and_auctions():
                 "category": tender.get("category", "General"),
                 "owner": owner_name,
                 "owner_id": owner_id,
-                "owner_phone": tender.get("owner_phone", "919999999999"),  # ✅ included
+                "owner_phone": tender.get("owner_phone") or user.get("phone", "919999999999"),
+  # ✅ included
                 "type": "tender"
             })
 
