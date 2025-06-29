@@ -21,7 +21,6 @@ ALLOWED_ORIGINS = [
 @tender_bp.route("/tenders", methods=["POST", "OPTIONS"])
 @jwt_required()
 @cross_origin(origins=ALLOWED_ORIGINS)
-
 def post_tender():
     try:
         data = request.json
@@ -79,6 +78,7 @@ def get_all_tenders_and_auctions():
             owner_name = "Unknown"
             owner_id = tender.get("created_by", "")
             parsed_owner_id = None
+            user = None  # ✅ Always define user
 
             try:
                 if isinstance(owner_id, dict) and "$oid" in owner_id:
@@ -112,8 +112,7 @@ def get_all_tenders_and_auctions():
                 "category": tender.get("category", "General"),
                 "owner": owner_name,
                 "owner_id": owner_id,
-                "owner_phone": tender.get("owner_phone") or user.get("phone", "919999999999"),
-  # ✅ included
+                "owner_phone": tender.get("owner_phone") or (user.get("phone") if user else "919999999999"),  # ✅ safest logic
                 "type": "tender"
             })
 
