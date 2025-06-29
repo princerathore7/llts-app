@@ -229,12 +229,13 @@ def reject_application(app_id):
 # ✅ Get Applications Received for Owner's Tenders
 @owner_bp.route('/api/owner/my-applications', methods=['GET', 'OPTIONS'])
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
-@jwt_required()
 def get_owner_received_applications():
     if request.method == "OPTIONS":
         return jsonify({"message": "Preflight OK"}), 200
 
+    from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
     try:
+        verify_jwt_in_request()
         owner_id = get_jwt_identity()
         print("🧾 Owner ID:", owner_id)
 
@@ -274,22 +275,3 @@ def get_owner_received_applications():
     except Exception as e:
         print("❌ Error in /my-applications:", e)
         return jsonify({"error": "Server error", "details": str(e)}), 500
-
-# ✅ Get All Available Workers (for owner dashboard)
-@owner_bp.route('/api/owner/available-workers', methods=['GET', 'OPTIONS'])
-@cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
-@jwt_required()
-def get_available_workers():
-    if request.method == "OPTIONS":
-        return jsonify({}), 200
-
-    try:
-        workers = list(mongo.db.users.find({"role": "worker", "status": "active"}))
-        for w in workers:
-            w["_id"] = str(w["_id"])
-        return jsonify({"status": "success", "workers": workers}), 200
-    except Exception as e:
-        print("❌ Error in fetching workers:", e)
-        return jsonify({"status": "error", "message": str(e)}), 500
-
-
