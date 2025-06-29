@@ -39,16 +39,17 @@ def post_tender():
         owner_phone = user.get("phone", "919999999999") if user else "919999999999"
 
         tender = {
-            "title": data["title"],
-            "description": data["description"],
-            "budget": data["budget"],
-            "location": data["location"],
-            "deadline": data["deadline"],
-            "category": data["category"],
-            "created_by": str(current_user),
-            "owner_phone": owner_phone,
-            "date_posted": datetime.utcnow()
-        }
+    "title": data["title"],
+    "description": data["description"],
+    "budget": data["budget"],
+    "location": data["location"],
+    "deadline": data["deadline"],
+    "category": data["category"],
+    "created_by": ObjectId(current_user),  # ✅ fixed here
+    "owner_phone": owner_phone,
+    "date_posted": datetime.utcnow()
+}
+
 
         result = mongo.db.tenders.insert_one(tender)
 
