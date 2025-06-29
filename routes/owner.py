@@ -115,10 +115,17 @@ def get_owner_tenders():
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
 def delete_tender(tender_id):
     if request.method == "OPTIONS":
-        return jsonify({}), 200
+        # 🛠 FIX: Add all required CORS headers manually
+        from flask import make_response
+        response = make_response()
+        response.headers.add("Access-Control-Allow-Origin", request.headers.get("Origin", "*"))
+        response.headers.add("Access-Control-Allow-Credentials", "true")
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+        response.headers.add("Access-Control-Allow-Methods", "DELETE,OPTIONS")
+        return response, 200
 
+    # ✅ Continue as normal for DELETE request
     from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
-
     try:
         verify_jwt_in_request()
         owner_id = get_jwt_identity()
@@ -225,27 +232,28 @@ def reject_application(app_id):
 @jwt_required()
 def get_owner_received_applications():
     if request.method == "OPTIONS":
-        print("🟡 CORS Preflight: /my-applications")
         return jsonify({"message": "Preflight OK"}), 200
 
     try:
         owner_id = get_jwt_identity()
         print("🧾 Owner ID:", owner_id)
 
+        # ✅ Step 1: Find all tenders by this owner
+        owner_tenders = list(mongo.db.tenders.find({"created_by": str(owner_id)}))
+        tender_ids = [t["_id"] for t in owner_tenders]
+
+        if not tender_ids:
+            return jsonify({"applications": []}), 200
+
+        # ✅ Step 2: Find all applications for these tenders
         applications = list(mongo.db.applications.find({
-            "$or": [
-                {"owner_id": str(owner_id)},
-                {"owner_id": ObjectId(owner_id)}
-            ]
+            "tender_id": {"$in": tender_ids}
         }))
 
         enriched = []
         for app in applications:
             try:
-                tender = mongo.db.tenders.find_one(
-                    {"_id": ObjectId(app["tender_id"])} if isinstance(app["tender_id"], str)
-                    else {"_id": app["tender_id"]}
-                )
+                tender = next((t for t in owner_tenders if t["_id"] == app["tender_id"]), None)
                 worker = mongo.db.users.find_one({"_id": ObjectId(app["worker_id"])})
 
                 enriched.append({
@@ -266,6 +274,7 @@ def get_owner_received_applications():
     except Exception as e:
         print("❌ Error in /my-applications:", e)
         return jsonify({"error": "Server error", "details": str(e)}), 500
+
 # ✅ Get All Available Workers (for owner dashboard)
 @owner_bp.route('/api/owner/available-workers', methods=['GET', 'OPTIONS'])
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
