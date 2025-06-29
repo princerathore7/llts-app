@@ -113,12 +113,14 @@ def get_owner_tenders():
 # ✅ Delete Tender (Fixed with @jwt_required)
 @owner_bp.route('/api/owner/delete-tender/<tender_id>', methods=['DELETE', 'OPTIONS'])
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
-@jwt_required()
 def delete_tender(tender_id):
     if request.method == "OPTIONS":
         return jsonify({}), 200
 
+    from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
+
     try:
+        verify_jwt_in_request()
         owner_id = get_jwt_identity()
 
         tender = mongo.db.tenders.find_one({"_id": ObjectId(tender_id)})
