@@ -231,7 +231,13 @@ def reject_application(app_id):
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
 def get_owner_received_applications():
     if request.method == "OPTIONS":
-        return jsonify({"message": "Preflight OK"}), 200
+        from flask import make_response
+        response = make_response(jsonify({"message": "Preflight OK"}), 200)
+        response.headers["Access-Control-Allow-Origin"] = request.headers.get("Origin", "*")
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+        response.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+        return response
 
     from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
     try:
