@@ -104,18 +104,18 @@ def get_all_tenders_and_auctions():
                 owner_id = "Invalid"
 
             tenders.append({
-                "_id": str(tender.get("_id")),
-                "title": tender.get("title", "Untitled"),
-                "description": tender.get("description", ""),
-                "budget": tender.get("budget", 0),
-                "location": tender.get("location", "Not specified"),
-                "deadline": str(tender.get("deadline", "Not set")),
-                "category": tender.get("category", "General"),
-                "owner": owner_name,
-                "owner_id": owner_id,
-                "owner_phone": tender.get("owner_phone") or (user.get("phone") if user else "919999999999"),  # ✅ safest logic
-                "type": "tender"
-            })
+    "_id": str(tender.get("_id")),
+    "title": tender.get("title", "Untitled"),
+    "description": tender.get("description", ""),
+    "budget": tender.get("budget", 0),
+    "location": tender.get("location", "Not specified"),
+    "deadline": str(tender.get("deadline", "Not set")),
+    "category": tender.get("category", "General"),
+    "owner": owner_name,
+    "owner_id": owner_id,
+    "owner_phone": tender.get("owner_phone") or (user.get("phone") if user and user.get("phone") else "919999999999"),
+    "type": "tender"
+})
 
         auctions = []
         for auction in auction_docs:

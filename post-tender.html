@@ -158,6 +158,8 @@
     <form id="postTenderForm">
       <label for="tenderTitle">Tender Title</label>
       <input type="text" id="tenderTitle" placeholder="Enter tender title" required />
+      <label for="phone">Contact Mobile Number (📱)</label>
+<input type="tel" id="phone" placeholder="Enter your contact number" required />
 
       <label for="tenderDescription">Work Description</label>
       <textarea id="tenderDescription" placeholder="Explain the work in detail..." required></textarea>
@@ -214,7 +216,8 @@
       budget: parseInt(document.getElementById('price').value),
       location: document.getElementById('location').value.trim(),
       deadline: document.getElementById('deadline').value,
-      category: document.getElementById('category').value
+      category: document.getElementById('category').value,
+      phone: document.getElementById('phone').value.trim()
     };
 
     // Basic field validation

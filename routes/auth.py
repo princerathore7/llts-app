@@ -33,7 +33,7 @@ CORS(auth_bp, origins=ALLOWED_ORIGINS, supports_credentials=True)
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
 def signup():
     if request.method == 'OPTIONS':
-        return '', 200  # ✅ Handle CORS preflight
+        return '', 200
 
     data = request.get_json()
     username = data.get('username')
@@ -41,8 +41,9 @@ def signup():
     email = data.get('email')
     role = data.get('role')
     name = data.get('name')
+    phone = data.get('phone')  # ✅ Add this line
 
-    if not all([username, password, email, role, name]):
+    if not all([username, password, email, role, name, phone]):
         return jsonify({"error": "Missing fields"}), 400
 
     if mongo.db.users.find_one({'username': username}):
@@ -56,6 +57,7 @@ def signup():
         "email": email,
         "role": role,
         "name": name,
+        "phone": phone,  # ✅ Store phone
         "status": "active",
         "created_at": datetime.utcnow()
     }
@@ -70,11 +72,9 @@ def signup():
             "totalEarnings": 0
         })
 
-    # ✅ Insert new user
     result = mongo.db.users.insert_one(user_data)
     new_user_id = result.inserted_id
 
-    # ✅ Assign 150 free tokens using init_token_record
     init_token_record(str(new_user_id), role.lower())
 
     return jsonify({"message": "Signup successful"}), 201
