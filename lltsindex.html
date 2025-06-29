@@ -1,23 +1,112 @@
-<!-- this is lltsindex.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Local Livelihood Tender System (LLTS)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LLTS - Local Livelihood Tender System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Rubik', sans-serif;
+    }
 
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7342369119079593"
-     crossorigin="anonymous"></script>
-  <!-- ✅ Your CSS -->
-  <link rel="stylesheet" href="lltsstyle.css?v=2" />
+    html, body {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(145deg, #0f0c29, #302b63, #24243e);
+      color: #ffffff;
+      overflow: hidden;
+    }
+
+    .lighthouse-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .beam {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(0, 255, 198, 0.3) 0%, rgba(0, 255, 198, 0) 60%);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: transform 0.05s linear;
+    }
+
+    .centered-content {
+      background-color: rgba(12, 12, 25, 0.6);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 0 30px rgba(0, 255, 198, 0.2);
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h1 {
+      font-size: 2.3rem;
+      margin-bottom: 20px;
+      color: #00ffc6;
+      text-shadow: 0 0 10px rgba(0, 255, 198, 0.5);
+    }
+
+    .subheading {
+      font-size: 0.9rem;
+      margin-top: 10px;
+      color: #bbbbbb;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 12px 0;
+      margin: 12px 0;
+      background: linear-gradient(135deg, #00ffc6, #00c3a4);
+      color: #111;
+      text-decoration: none;
+      border-radius: 30px;
+      font-size: 1.05rem;
+      font-weight: bold;
+      transition: 0.3s ease-in-out;
+      box-shadow: 0 0 12px rgba(0, 255, 198, 0.4);
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #00c3a4, #00ffc6);
+      box-shadow: 0 0 16px rgba(0, 255, 198, 0.6);
+    }
+
+    @media (max-width: 600px) {
+      .centered-content {
+        padding: 20px;
+      }
+      h1 {
+        font-size: 1.9rem;
+      }
+      .btn {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="container center">
-    <h1>Welcome to LLTS</h1>
-    <p>Choose your role to continue:</p>
-    <div class="subheading">Developed by Prince Kumar Rathore</div>
+  <div class="lighthouse-container">
+    <div class="beam" id="beam"></div>
 
-    <div class="role-buttons">
+    <div class="centered-content">
+      <h1>Welcome to LLTS</h1>
+      <p>Choose your role to continue:</p>
+      <div class="subheading">Developed by Prince Kumar Rathore</div>
+
       <a href="ownerlogin.html" class="btn">Login as Owner</a>
       <a href="worker login.html" class="btn">Login as Worker</a>
       <a href="signup.html" class="btn">
@@ -27,7 +116,17 @@
     </div>
   </div>
 
-  <!-- ✅ JS -->
-  <script src="lltsscript.js"></script>
+  <script>
+    const beam = document.getElementById('beam');
+
+    document.addEventListener('mousemove', (e) => {
+      beam.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+    });
+
+    document.addEventListener('touchmove', (e) => {
+      const touch = e.touches[0];
+      beam.style.transform = `translate(${touch.clientX}px, ${touch.clientY}px)`;
+    }, { passive: true });
+  </script>
 </body>
 </html>

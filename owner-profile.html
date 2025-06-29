@@ -1,0 +1,157 @@
+<!-- 📄 owner-profile.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Update Owner Profile</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #2c3e50, #3498db);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: #fff;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px 25px;
+      border-radius: 15px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      backdrop-filter: blur(12px);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 1.7em;
+      color: #f1f1f1;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 18px;
+      border: none;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-size: 1em;
+      outline: none;
+    }
+
+    input[type="text"]::placeholder {
+      color: #ddd;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background-color: #27ae60;
+      color: white;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #219150;
+    }
+
+    #status {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>👤 Update Your Profile</h2>
+    <form id="updateForm">
+      <label for="name">Full Name:</label>
+      <input type="text" id="name" placeholder="Your name" required />
+
+      <label for="phone">Phone Number:</label>
+      <input type="text" id="phone" placeholder="e.g., 919876543210" required />
+
+      <label for="location">Location:</label>
+      <input type="text" id="location" placeholder="City / State" />
+
+      <label for="profile_img">Profile Image URL:</label>
+      <input type="text" id="profile_img" placeholder="https://..." />
+
+      <button type="submit">💾 Save Changes</button>
+    </form>
+    <p id="status"></p>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("token");
+
+    // Pre-fill existing profile
+    fetch("https://llts-app.onrender.com/api/owner/profile", {
+      headers: {
+        Authorization: "Bearer " + token
+      }
+    })
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("name").value = data.name || "";
+      document.getElementById("phone").value = data.phone || "";
+      document.getElementById("location").value = data.location || "";
+      document.getElementById("profile_img").value = data.profile_img || "";
+    });
+
+    // Handle submit
+    document.getElementById("updateForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const payload = {
+        name: document.getElementById("name").value,
+        phone: document.getElementById("phone").value,
+        location: document.getElementById("location").value,
+        profile_img: document.getElementById("profile_img").value
+      };
+
+      fetch("https://llts-app.onrender.com/api/owner/update-profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("status").textContent = data.msg || "✅ Profile updated!";
+        document.getElementById("status").style.color = "lightgreen";
+      })
+      .catch(err => {
+        document.getElementById("status").textContent = "❌ Failed to update profile!";
+        document.getElementById("status").style.color = "salmon";
+      });
+    });
+  </script>
+</body>
+</html>

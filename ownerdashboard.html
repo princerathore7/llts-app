@@ -314,6 +314,28 @@
     max-width: 100%;
     transition: transform 0.3s ease;
   }
+  #profileBtn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #111;
+  border: 2px solid #f6c90e;
+  box-shadow: 0 0 15px #f6c90e, 0 0 30px #f6c90e inset;
+  color: #f6c90e;
+  font-size: 28px;
+  cursor: pointer;
+  z-index: 1000;
+  transition: 0.3s ease;
+}
+
+#profileBtn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px #f6c90e, 0 0 40px #f6c90e inset;
+}
+
   </style>
 </head>
 
@@ -326,10 +348,11 @@
 <div id="token-balance" class="text-info" style="font-weight: 600;">Loading Tokens...</div>
 
       <!-- Profile Button -->
-      <button id="profileBtn" title="View Profile & Posts">
-        <i class="bi bi-person-circle"></i>
-      </button>
-  
+  <button id="profileBtn" title="View Profile">
+  <i class="bi bi-person-circle"></i>
+</button>
+
+
 
 
       <!-- Royal Jhoomer SVG Centered -->
@@ -844,3 +867,8 @@ async function loadAvailableWorkers() {
 }
 
 document.addEventListener("DOMContentLoaded", loadAvailableWorkers);
+
+  document.getElementById("profileBtn").addEventListener("click", function () {
+    window.location.href = "owner-profile.html";
+  });
+</script>
