@@ -30,15 +30,8 @@ mongo.init_app(app)
 app.config["JWT_SECRET_KEY"] = os.getenv("SECRET_KEY") or "secret"
 jwt = JWTManager(app)
 
-# ✅ Allowed frontend origins
-ALLOWED_ORIGINS = [
-    "http://127.0.0.1:5500",
-    "http://localhost:5500",
-    "http://127.0.0.1:8000",
-    "http://localhost:8000",
-    "https://llts-app.onrender.com",
-    "https://spiffy-eclair-f0f49f.netlify.app"
-]
+# ✅ Allowed frontend origins (from .env)
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "").split(",")
 
 # ✅ CORS Setup - UNIVERSAL
 CORS(app,
