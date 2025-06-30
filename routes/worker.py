@@ -9,6 +9,7 @@ import os
 from werkzeug.security import check_password_hash
 from models.token import get_token_record, decrement_token
 from dotenv import load_dotenv
+from flask_cors import cross_origin
 
 # ✅ Load environment variables
 env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '.env'))
