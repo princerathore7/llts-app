@@ -131,11 +131,12 @@ def get_all_tenders_and_auctions():
 
 # ========================= ✅ APPLY FOR TENDER =========================
 @worker_bp.route("/apply-tender", methods=["POST", "OPTIONS"])
-@jwt_required()
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
+@jwt_required()
 def apply_tender():
     if request.method == "OPTIONS":
-        return jsonify({}), 200
+        return jsonify({"status": "OK"}), 200
+
 
     try:
         user_id = get_jwt_identity()
