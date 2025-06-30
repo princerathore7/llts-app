@@ -46,3 +46,30 @@ def get_token_info():
 
     token_data["_id"] = str(token_data["_id"])
     return jsonify(token_data), 200
+@token_bp.route('/token-history', methods=['GET'])
+@jwt_required()
+def get_token_history():
+    try:
+        user_id = get_jwt_identity()
+        role = request.args.get("role", None)  # Optional
+
+        query = {"user_id": user_id}
+        if role:
+            query["role"] = role  # Optional filter
+
+        history = list(mongo.db.token_transactions.find(
+            query
+        ).sort("timestamp", -1))
+
+        result = [{
+            "tokens_added": h.get("tokens_added", 0),
+            "amount_rupees": h.get("amount_rupees", 0),
+            "source": h.get("source", ""),
+            "timestamp": h.get("timestamp").strftime("%Y-%m-%d %H:%M"),
+            "payment_id": h.get("payment_id", "")
+        } for h in history]
+
+        return jsonify(result), 200
+    except Exception as e:
+        print("❌ Error in token-history:", e)
+        return jsonify({"error": "Could not fetch history"}), 500

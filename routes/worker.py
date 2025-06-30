@@ -128,8 +128,10 @@ def get_all_tenders_and_auctions():
     return jsonify({"tenders": combined_list}), 200
 
 # ========================= ✅ APPLY FOR TENDER =========================
+# ========================= ✅ APPLY FOR TENDER =========================
 @worker_bp.route("/apply-tender", methods=["POST", "OPTIONS"])
 @jwt_required()
+@cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
 def apply_tender():
     if request.method == "OPTIONS":
         return jsonify({}), 200
@@ -169,7 +171,7 @@ def apply_tender():
         if existing:
             return jsonify({"error": "Already applied to this tender."}), 409
 
-        # ✅ Save application (basic, even if it's WhatsApp-based)
+        # ✅ Save application
         mongo.db.applications.insert_one({
             "tender_id": tender_obj_id,
             "worker_id": ObjectId(user_id),
@@ -180,10 +182,10 @@ def apply_tender():
             "message": message,
             "status": "pending",
             "applied_at": datetime.utcnow(),
-            "via": "whatsapp"  # ✅ optional: track method of application
+            "via": "whatsapp"
         })
 
-        # ✅ Deduct 5 tokens for WhatsApp-based apply
+        # ✅ Deduct 5 tokens
         mongo.db.tokens.update_one(
             {"user_id": str(user_id), "role": "worker"},
             {"$inc": {"tokens": -5}}

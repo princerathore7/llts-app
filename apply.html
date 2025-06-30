@@ -6,6 +6,7 @@
   <title>Apply for Tender</title>
   <link rel="stylesheet" href="apply.css" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7342369119079593" crossorigin="anonymous"></script>
+
 </head>
 <body>
   <div class="overlay">
@@ -31,41 +32,75 @@
   </div>
 
   <script>
-    document.getElementById("applyForm").addEventListener("submit", function (e) {
-      e.preventDefault();
+  const API_BASE = "https://llts-app.onrender.com/api"; // Change if needed
 
-      const fullName = document.getElementById("fullName").value.trim();
-      const mobile = document.getElementById("mobile").value.trim();
-      const amount = document.getElementById("amount").value.trim();
-      const message = document.getElementById("message").value.trim();
+  document.getElementById("applyForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
 
-      const ownerPhone = localStorage.getItem("selectedOwnerPhone");
-      const tenderTitle = localStorage.getItem("selectedTenderTitle") || "a tender";
+    const fullName = document.getElementById("fullName").value.trim();
+    const mobile = document.getElementById("mobile").value.trim();
+    const amount = document.getElementById("amount").value.trim();
+    const message = document.getElementById("message").value.trim();
 
-      if (!fullName || !mobile || !amount || !message) {
-        alert("⚠️ Please fill in all fields.");
-        return;
+    const ownerPhone = localStorage.getItem("selectedOwnerPhone");
+    const tenderId = localStorage.getItem("selectedTenderId");
+    const tenderTitle = localStorage.getItem("selectedTenderTitle") || "a tender";
+    const token = localStorage.getItem("token");
+
+    if (!fullName || !mobile || !amount || !message) {
+      alert("⚠️ Please fill in all fields.");
+      return;
+    }
+
+    if (!ownerPhone || !/^(\+?\d{10,15})$/.test(ownerPhone)) {
+      alert("⚠️ Invalid or missing owner contact number.");
+      return;
+    }
+
+    if (!token || !tenderId) {
+      alert("❌ Missing token or tender ID. Please go back and try again.");
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/apply-tender`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          tender_id: tenderId,
+          worker_name: fullName,
+          contact: mobile,
+          quoted_price: amount,
+          message: message
+        })
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        const finalMessage = `Hello, I'm interested in your tender "${tenderTitle}".\n\n👤 Name: ${fullName}\n📱 Contact: ${mobile}\n💰 Quoted Price: ₹${amount}\n📄 Reason: ${message}\n\nRegards,\nLLTS Corporations`;
+        const encodedMessage = encodeURIComponent(finalMessage);
+        const whatsappURL = `https://wa.me/${ownerPhone.startsWith('+91') ? ownerPhone : '91' + ownerPhone}?text=${encodedMessage}`;
+
+        localStorage.removeItem("selectedTenderId");
+        localStorage.removeItem("selectedOwnerPhone");
+        localStorage.removeItem("selectedTenderTitle");
+
+        window.location.href = whatsappURL;
+      } else {
+        alert(result.error || "❌ Failed to apply. Please try again.");
       }
-
-      if (!ownerPhone || !/^(\+?\d{10,15})$/.test(ownerPhone)) {
-        alert("⚠️ Invalid or missing owner contact number.");
-        return;
-      }
-
-      const finalMessage = `Hello, I'm interested in your tender "${tenderTitle}".\n\n👤 Name: ${fullName}\n📱 Contact: ${mobile}\n💰 Quoted Price: ₹${amount}\n📄 Reason: ${message}\n\nRegards,\nLLTS Corporations`;
-
-      const encodedMessage = encodeURIComponent(finalMessage);
-      const whatsappURL = `https://wa.me/${ownerPhone.startsWith('+91') ? ownerPhone : '91' + ownerPhone}?text=${encodedMessage}`;
+    } catch (err) {
+      console.error("❌ Apply Tender Error:", err);
+      alert("Something went wrong. Try again later.");
+    }
+  });
+</script>
 
 
-      // Cleanup
-      localStorage.removeItem("selectedTenderId");
-      localStorage.removeItem("selectedOwnerPhone");
-      localStorage.removeItem("selectedTenderTitle");
 
-      // Redirect
-      window.location.href = whatsappURL;
-    });
-  </script>
 </body>
 </html>
