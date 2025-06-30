@@ -208,3 +208,4 @@ function filterTendersByLocation(query) {
   displayTenders(filtered);
 }
 
+

@@ -34,22 +34,20 @@ def post_tender():
             if not data.get(field):
                 return jsonify({"error": f"{field} is required"}), 400
 
-        # ✅ Fetch phone number from user profile
-        user = mongo.db.users.find_one({"_id": ObjectId(current_user)})
-        owner_phone = user.get("phone", "919999999999") if user else "919999999999"
+        # ✅ Use phone number from frontend form (not from profile)
+        owner_phone = data.get("phone") or "919999999999"
 
         tender = {
-    "title": data["title"],
-    "description": data["description"],
-    "budget": data["budget"],
-    "location": data["location"],
-    "deadline": data["deadline"],
-    "category": data["category"],
-    "created_by": ObjectId(current_user),  # ✅ fixed here
-    "owner_phone": owner_phone,
-    "date_posted": datetime.utcnow()
-}
-
+            "title": data["title"],
+            "description": data["description"],
+            "budget": data["budget"],
+            "location": data["location"],
+            "deadline": data["deadline"],
+            "category": data["category"],
+            "created_by": ObjectId(current_user),
+            "owner_phone": owner_phone,
+            "date_posted": datetime.utcnow()
+        }
 
         result = mongo.db.tenders.insert_one(tender)
 
@@ -61,7 +59,6 @@ def post_tender():
     except Exception as e:
         print("❌ Error posting tender:", e)
         return jsonify({"error": "Internal Server Error"}), 500
-
 
 # ------------------------------------------------------------------
 # ✅ GET /api/get-tenders - Get all tenders and auctions
