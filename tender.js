@@ -199,10 +199,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
-function filterTendersByLocation(location) {
-  const filtered = allTenders.filter(t =>
-    t.type === 'tender' &&
-    t.location.toLowerCase().includes(location.toLowerCase())
-  );
+function filterTendersByLocation(query) {
+  query = query.toLowerCase();
+  const filtered = allTenders.filter(t => {
+    const location = t.location || "";
+    return t.type === 'tender' && location.toLowerCase().includes(query);
+  });
   displayTenders(filtered);
 }
+
