@@ -101,18 +101,19 @@
 
   <script>
     function downloadPDF(lang) {
-      const link = document.createElement("a");
-      if (lang === 'hindi') {
-        link.href = "pdfs/shapath_hindi.pdf";  // Put correct path here
-        link.download = "LLTS_ShapathPatra_Hindi.pdf";
-      } else {
-        link.href = "pdfs/promise_english.pdf"; // Put correct path here
-        link.download = "LLTS_Promise_Notice_English.pdf";
-      }
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
+  const link = document.createElement("a");
+  if (lang === 'hindi') {
+    link.href = "pdfs/shapath_hindi.pdf";
+    link.download = "LLTS_ShapathPatra_Hindi.pdf";
+  } else {
+    link.href = "pdfs/promis_english.pdf";
+    link.download = "LLTS_Promise_Notice_English.pdf";
+  }
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
   </script>
 
 </body>

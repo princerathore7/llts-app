@@ -179,3 +179,23 @@ def delete_tender(tender_id):
     except Exception as e:
         print("❌ Error deleting tender:", e)
         return jsonify({"error": "Internal Server Error"}), 500
+# ----------------------------------------------
+# ✅ DELETE /api/tenders/expired - Delete expired tenders
+# ----------------------------------------------
+@tender_bp.route("/tenders/expired", methods=["DELETE"])
+@cross_origin(origins=ALLOWED_ORIGINS)
+def delete_expired_tenders():
+    try:
+        current_time = datetime.utcnow()
+
+        result = mongo.db.tenders.delete_many({
+            "deadline": {"$lt": current_time}
+        })
+
+        return jsonify({
+            "message": f"✅ Deleted {result.deleted_count} expired tenders"
+        }), 200
+
+    except Exception as e:
+        print("❌ Error deleting expired tenders:", e)
+        return jsonify({"error": "Internal Server Error"}), 500
