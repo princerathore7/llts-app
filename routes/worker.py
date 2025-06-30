@@ -15,6 +15,9 @@ from flask_cors import cross_origin
 env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '.env'))
 load_dotenv(dotenv_path=env_path)
 
+# ✅ CORS Allowed Origins Fix
+ALLOWED_ORIGINS = ["*"]  # Replace with specific domain for security
+
 worker_bp = Blueprint('worker', __name__)
 
 # ========================= 🔐 WORKER LOGIN =========================
@@ -129,7 +132,6 @@ def get_all_tenders_and_auctions():
     return jsonify({"tenders": combined_list}), 200
 
 # ========================= ✅ APPLY FOR TENDER =========================
-# ========================= ✅ APPLY FOR TENDER =========================
 @worker_bp.route("/apply-tender", methods=["POST", "OPTIONS"])
 @jwt_required()
 @cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
@@ -211,7 +213,8 @@ def get_applied_tender_count():
     except Exception as e:
         print("❌ Error in counting applications:", str(e))
         return jsonify({"error": "Server error"}), 500
-# ========================= 🔢 worekr profile=========================
+
+# ========================= 📂 GET ALL WORKER PROFILES =========================
 @worker_bp.route('/all-profiles', methods=['GET'])
 def get_all_worker_profiles():
     workers = mongo.db.users.find({"role": "worker"})
@@ -223,7 +226,7 @@ def get_all_worker_profiles():
             "skill": w.get("skills", ""),
             "experience": w.get("experience", 0),
             "location": w.get("location", ""),
-            "img": w.get("img", "default-worker.jpg"),  # Optional image field
-            "icon": "bi-person-workspace"  # For frontend
+            "img": w.get("img", "default-worker.jpg"),
+            "icon": "bi-person-workspace"
         })
     return jsonify(result), 200
