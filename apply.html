@@ -55,7 +55,8 @@
       const finalMessage = `Hello, I'm interested in your tender "${tenderTitle}".\n\n👤 Name: ${fullName}\n📱 Contact: ${mobile}\n💰 Quoted Price: ₹${amount}\n📄 Reason: ${message}\n\nRegards,\nLLTS Corporations`;
 
       const encodedMessage = encodeURIComponent(finalMessage);
-      const whatsappURL = `https://wa.me/${ownerPhone}?text=${encodedMessage}`;
+      const whatsappURL = `https://wa.me/${ownerPhone.startsWith('+91') ? ownerPhone : '91' + ownerPhone}?text=${encodedMessage}`;
+
 
       // Cleanup
       localStorage.removeItem("selectedTenderId");
