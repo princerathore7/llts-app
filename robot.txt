@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://spiffy-eclair-f0f49f.netlify.app/

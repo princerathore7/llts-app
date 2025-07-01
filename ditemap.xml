@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset 
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <url>
+    <loc>https://spiffy-eclair-f0f49f.netlify.app/</loc>
+    <priority>1.00</priority>
+  </url>
+
+  <url>
+    <loc>https://spiffy-eclair-f0f49f.netlify.app/about.html</loc>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://spiffy-eclair-f0f49f.netlify.app/privacy.html</loc>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://spiffy-eclair-f0f49f.netlify.app/terms.html</loc>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://spiffy-eclair-f0f49f.netlify.app/disclaimer.html</loc>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://spiffy-eclair-f0f49f.netlify.app/contact.html</loc>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://spiffy-eclair-f0f49f.netlify.app/howtouse.html</loc>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://spiffy-eclair-f0f49f.netlify.app/signup.html</loc>
+    <priority>0.60</priority>
+  </url>
+
+  <url>
+    <loc>https://spiffy-eclair-f0f49f.netlify.app/ownerlogin.html</loc>
+    <priority>0.60</priority>
+  </url>
+
+  <url>
+    <loc>https://spiffy-eclair-f0f49f.netlify.app/worker%20login.html</loc>
+    <priority>0.60</priority>
+  </url>
+
+</urlset>

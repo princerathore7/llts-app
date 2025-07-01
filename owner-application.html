@@ -147,23 +147,32 @@
   </style>
 </head>
 <body>
-
   <div class="container">
     <div class="header-row">
       <h1>📄 Received Applications</h1>
+
       <div class="note-box">
-        ⚠️ <strong>Note:</strong> This panel is under development. For now, workers may contact you directly via WhatsApp after applying. you can just chat them if you are intersted or directly block them
+        ⚠️ <strong>Note:</strong> Currently, this section is under development.  
+        Workers may contact you directly via WhatsApp after applying.  
+        You can chat with them or block them if needed.
       </div>
+
       <button class="btn-refresh" onclick="location.reload()">🔁 Refresh</button>
     </div>
 
-    <input type="text" id="searchBox" placeholder="🔍 Search by worker name, tender title, or price..." oninput="filterApplications()">
+    <input type="text" id="searchBox" placeholder="🔍 Search by worker name, tender title, or price..." oninput="filterApplications()" />
 
-    <div id="application-list">
-      <!-- Applications will be dynamically inserted here -->
+    <div id="application-list" style="margin-top: 30px; font-style: italic; color: #bbb;">
+      📭 No applications are listed at the moment.<br />
+      You will receive them directly on WhatsApp when a worker applies.
     </div>
+
+    <noscript>
+      <div style="margin-top: 20px; color: #999; font-style: italic;">
+        ⚠️ JavaScript is disabled or unsupported. This panel requires JavaScript to display applications dynamically.
+      </div>
+    </noscript>
   </div>
 
-  <script src="owner-application.js"></script>
+  <!-- <script src="owner-application.js"></script> ->
 </body>
-</html>
