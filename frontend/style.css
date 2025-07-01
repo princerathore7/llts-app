@@ -1,0 +1,99 @@
+/* ===== Universal Reset ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+  color: #212529;
+  line-height: 1.6;
+  padding: 20px;
+}
+
+/* ===== Container Styling ===== */
+.container {
+  max-width: 900px;
+  margin: auto;
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== Headings ===== */
+h1 {
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: #343a40;
+}
+
+h2, h3 {
+  color: #495057;
+  margin-top: 25px;
+  margin-bottom: 10px;
+}
+
+/* ===== Paragraphs & Lists ===== */
+p {
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+ul {
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+
+ul li {
+  margin-bottom: 8px;
+}
+
+/* ===== Links ===== */
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ===== Footer Links (if used on pages) ===== */
+.footer-links {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.footer-links a {
+  margin: 0 10px;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+/* ===== Responsive (Mobile View) ===== */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 26px;
+  }
+
+  p, li {
+    font-size: 15px;
+  }
+
+  .footer-links {
+    font-size: 13px;
+  }
+}
