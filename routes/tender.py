@@ -50,6 +50,11 @@ def post_tender():
         }
 
         result = mongo.db.tenders.insert_one(tender)
+        # ✅ Deduct 1 token from owner's account
+        mongo.db.users.update_one(
+        {"_id": ObjectId(current_user)},
+        {"$inc": {"tokens": -1}}
+)
 
         return jsonify({
             "message": "Tender posted successfully",
