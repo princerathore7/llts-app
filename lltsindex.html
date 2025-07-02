@@ -16,17 +16,16 @@
     }
 
     body {
-      height: 100vh;
-      background: linear-gradient(145deg, #0d0d0d, #1a1a1a);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      color: #fff;
-      overflow: hidden;
-      position: relative;
-    }
-
+  min-height: 100dvh; /* ✅ changed from height: 100vh */
+  background: linear-gradient(145deg, #0d0d0d, #1a1a1a);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  overflow: hidden;
+  position: relative;
+}
     h2.app-title {
       position: absolute;
       top: 20px;
@@ -35,21 +34,17 @@
       text-shadow: 0 0 12px #00ffc6;
     }
 
-    .login-box {
-      position: relative;
-      width: 250px;
-      height: 60px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0, 255, 198, 0.2);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      transition: all 0.4s ease;
-      z-index: 1;
-    }
+   .login-box.expanded {
+  height: 300px;
+  width: 300px;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 30px 20px;
+  
+  /* ✅ added for safety */
+  overflow-y: auto;
+  max-height: 90dvh;
+}
 
     .login-box.expanded {
       height: 300px;
