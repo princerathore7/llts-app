@@ -13,123 +13,125 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-    body {
-      height: 100vh;
-      font-family: 'Space Grotesk', sans-serif;
-      background: radial-gradient(ellipse at center, #101d2d, #0a0f1a);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      overflow-x: hidden;
-      padding: 16px;
-    }
+  html, body {
+    height: 100%;
+    width: 100%;
+    font-family: 'Space Grotesk', sans-serif;
+    background: radial-gradient(ellipse at center, #101d2d, #0a0f1a);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    overflow-x: hidden;
+    padding: 16px;
+  }
 
-    .glow-circle {
-      position: absolute;
-      width: 350px;
-      height: 350px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,212,59,0.3), transparent);
-      animation: pulse 6s infinite;
-      z-index: 0;
-    }
+  .glow-circle {
+    position: absolute;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,212,59,0.3), transparent);
+    animation: pulse 6s infinite;
+    z-index: 0;
+  }
 
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 0.8; }
-      50% { transform: scale(1.2); opacity: 0.3; }
-      100% { transform: scale(1); opacity: 0.8; }
-    }
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.2); opacity: 0.3; }
+    100% { transform: scale(1); opacity: 0.8; }
+  }
 
-    .container {
-      position: relative;
-      background: rgba(255, 255, 255, 0.06);
-      padding: 2rem 1.5rem;
-      border-radius: 20px;
-      backdrop-filter: blur(14px);
-      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
-      text-align: center;
-      z-index: 2;
-      max-width: 450px;
-      width: 100%;
-    }
+  .container {
+    position: relative;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 2rem 1.5rem;
+    border-radius: 20px;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    z-index: 2;
+    max-width: 450px;
+    width: 100%;
+  }
 
+  .container h1 {
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+    color: #fdd835;
+  }
+
+  .container p {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    color: #e0e0e0;
+  }
+
+  .btns {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .btn {
+    background: #fdd835;
+    color: #111;
+    border: none;
+    padding: 0.9rem 1.5rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .btn:hover {
+    background-color: #fff350;
+    transform: translateY(-2px);
+  }
+
+  .footer {
+    font-size: 0.9rem;
+    color: #ccc;
+    margin-top: 10px;
+    line-height: 1.4;
+  }
+
+  .countdown {
+    font-size: 0.95rem;
+    color: #bbb;
+    margin-top: 10px;
+  }
+
+  @media (max-width: 480px) {
     .container h1 {
-      font-size: 2.2rem;
-      margin-bottom: 1rem;
-      color: #fdd835;
+      font-size: 1.8rem;
     }
 
     .container p {
-      font-size: 1rem;
-      margin-bottom: 2rem;
-      color: #e0e0e0;
-    }
-
-    .btns {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
     }
 
     .btn {
-      background: #fdd835;
-      color: #111;
-      border: none;
-      padding: 0.9rem 1.5rem;
-      border-radius: 12px;
       font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      padding: 1rem;
       width: 100%;
-      max-width: 200px;
     }
+  }
+</style>
 
-    .btn:hover {
-      background-color: #fff350;
-      transform: translateY(-2px);
-    }
-
-    .footer {
-      font-size: 0.9rem;
-      color: #ccc;
-      margin-top: 10px;
-      line-height: 1.4;
-    }
-
-    .countdown {
-      font-size: 0.95rem;
-      color: #bbb;
-      margin-top: 10px;
-    }
-
-    @media (max-width: 480px) {
-      .container h1 {
-        font-size: 1.8rem;
-      }
-
-      .container p {
-        font-size: 0.95rem;
-      }
-
-      .btn {
-        font-size: 1rem;
-        padding: 1rem;
-        width: 100%;
-      }
-    }
-  </style>
 </head>
 <body>
 
