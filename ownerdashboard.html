@@ -224,17 +224,20 @@ header h1 {
 
 
 <body>
-  <!-- ✅ Ad Block Wrapped in Visible Container -->
-  <div class="ad-container">
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-format="autorelaxed"
-         data-ad-client="ca-pub-7342369119079593"
-         data-ad-slot="4926113294"></ins>
-    <script>
+<!-- ✅ Wrapped inside a visible, responsive container -->
+<div class="ad-container" style="width: 100%; min-width: 320px; min-height: 100px; text-align:center;">
+  <ins class="adsbygoogle"
+       style="display:block; width:100%; height:100px;"
+       data-ad-format="autorelaxed"
+       data-ad-client="ca-pub-7342369119079593"
+       data-ad-slot="4926113294"></ins>
+  <script>
+    window.addEventListener("load", function() {
       (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-  </div>
+    });
+  </script>
+</div>
+
 
   <div class="owner-dashboard royal-theme">
     <header>
