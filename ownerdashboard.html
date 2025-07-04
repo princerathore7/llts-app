@@ -222,9 +222,10 @@ header h1 {
 </head>
 
 
+
 <body>
   <!-- ✅ Ad Block Wrapped in Visible Container -->
-  <div style="width:100%; max-width:1000px; margin:auto;">
+  <div class="ad-container">
     <ins class="adsbygoogle"
          style="display:block"
          data-ad-format="autorelaxed"
@@ -282,17 +283,17 @@ header h1 {
     </header>
 
     <!-- 🔁 Refresh & Close Buttons -->
-    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 2rem;">
-      <button onclick="window.location.href='worker-dashboard.html'" style="background-color: crimson; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer;">
+    <div class="button-bar">
+      <button onclick="window.location.href='worker-dashboard.html'" class="close-btn-bar">
         ✖ Close
       </button>
-      <button onclick="fetchTendersAndAuctions()" style="background-color: #fdd835; color: #000; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer;">
+      <button onclick="fetchTendersAndAuctions()" class="refresh-btn-bar">
         🔁 Refresh
       </button>
     </div>
 
     <!-- ✅ Another Ad Block -->
-    <div style="width:100%; max-width:1000px; margin:auto;">
+    <div class="ad-container">
       <ins class="adsbygoogle"
            style="display:block"
            data-ad-client="ca-pub-7342369119079593"
