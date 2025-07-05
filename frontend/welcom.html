@@ -2,214 +2,183 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-  <title>Welcome to LLTS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LLTS - Local Livelihood Tender System</title>
 
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7342369119079593"
     crossorigin="anonymous"></script>
 
-  <!-- Fonts & Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
+  <!-- Styles -->
   <style>
-    * {
+    body {
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
+      background: #f9fafa;
+      color: #222;
+      line-height: 1.6;
     }
 
-    html, body {
-      height: 100%;
-      min-height: 100dvh;
-      font-family: 'Space Grotesk', sans-serif;
-      background: radial-gradient(ellipse at center, #101d2d, #0a0f1a);
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      padding: env(safe-area-inset-top, 16px) env(safe-area-inset-left, 16px)
-               env(safe-area-inset-bottom, 16px) env(safe-area-inset-right, 16px);
-      overflow: hidden;
-      position: relative;
-    }
-
-    .glow-circle {
-      position: absolute;
-      width: 350px;
-      height: 350px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,212,59,0.3), transparent);
-      animation: pulse 6s infinite;
-      z-index: 0;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 0.8; }
-      50% { transform: scale(1.2); opacity: 0.3; }
-      100% { transform: scale(1); opacity: 0.8; }
-    }
-
-    .container {
-      position: relative;
-      background: rgba(255, 255, 255, 0.06);
-      padding: 2rem 1.5rem;
-      border-radius: 20px;
-      backdrop-filter: blur(14px);
-      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+    header {
+      background: #1e3a8a;
+      color: #fff;
+      padding: 2.5rem 1rem;
       text-align: center;
-      z-index: 2;
-      max-width: 450px;
-      width: 100%;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    }
+
+    header p {
+      font-size: 1.1rem;
+      font-weight: 400;
+    }
+
+    nav {
+      text-align: center;
+      padding: 1rem;
+      background: #ecf0f1;
+    }
+
+    nav a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: #1e3a8a;
+      font-weight: 600;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    h2 {
+      color: #1f2937;
+    }
+
+    .cta-buttons {
       display: flex;
-      flex-direction: column;
-      justify-content: center;
-      min-height: 90dvh;
-    }
-
-    .container h1 {
-      font-size: 2.2rem;
-      margin-bottom: 1rem;
-      color: #fdd835;
-    }
-
-    .container p {
-      font-size: 1rem;
-      margin-bottom: 2rem;
-      color: #e0e0e0;
-    }
-
-    .btns {
-      display: flex;
-      justify-content: center;
       flex-wrap: wrap;
       gap: 1rem;
-      margin-bottom: 1.5rem;
+      margin: 2rem 0;
     }
 
-    .btn {
-      background: #fdd835;
-      color: #111;
-      border: none;
-      padding: 0.9rem 1.5rem;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      width: 100%;
-      max-width: 200px;
-    }
-
-    .btn:hover {
-      background-color: #fff350;
-      transform: translateY(-2px);
-    }
-
-    .countdown {
-      font-size: 0.95rem;
-      color: #bbb;
-      margin-top: 10px;
-    }
-
-    .footer {
-      font-size: 0.9rem;
-      color: #ccc;
-      margin-top: 10px;
-      line-height: 1.4;
-    }
-
-    .footer-links {
-      position: absolute;
-      bottom: 10px;
-      font-size: 0.8rem;
+    .cta-buttons a {
+      flex: 1;
+      min-width: 200px;
       text-align: center;
-      width: 100%;
-      color: #bbb;
-    }
-
-    .footer-links a {
-      color: #fdd835;
-      margin: 0 5px;
+      background: #fbbf24;
+      color: #000;
+      padding: 1rem;
       text-decoration: none;
+      border-radius: 10px;
+      font-weight: bold;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
     }
 
-    .footer-links a:hover {
-      text-decoration: underline;
-      color: #fff176;
+    .cta-buttons a:hover {
+      background: #facc15;
     }
 
-    @media (max-width: 480px) {
-      .container h1 {
-        font-size: 1.8rem;
+    .ads {
+      margin: 2rem 0;
+      text-align: center;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      padding: 2rem 1rem;
+      background: #ecf0f1;
+      color: #333;
+      line-height: 1.5;
+    }
+
+    .brand-footer {
+      font-weight: 600;
+      color: #111;
+      margin-top: 0.7rem;
+    }
+
+    @media (max-width: 600px) {
+      .cta-buttons {
+        flex-direction: column;
       }
 
-      .container p {
-        font-size: 0.95rem;
-      }
-
-      .btn {
-        font-size: 1rem;
-        padding: 1rem;
-        width: 100%;
+      header h1 {
+        font-size: 2rem;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Background Effects -->
-  <div class="glow-circle" style="top: 10%; left: 5%;"></div>
-  <div class="glow-circle" style="bottom: 10%; right: 5%;"></div>
-
-  <!-- Main Welcome Card -->
-  <div class="container">
+  <header>
     <h1>🚀 Welcome to LLTS</h1>
     <p>Empowering Bharat, One Tender at a Time</p>
+  </header>
 
-    <div class="btns">
-      <button class="btn" onclick="window.location.href='ownerlogin.html'">
-        <i class="fas fa-user-tie"></i> I'm a Work Owner
-      </button>
-      <button class="btn" onclick="window.location.href='worker login.html'">
-        <i class="fas fa-person-digging"></i> I'm a Worker
-      </button>
-    </div>
-
-    <div class="countdown">
-      ⏳ Redirecting to dashboard in <span id="count">5</span> seconds...
-    </div>
-
-    <div class="footer">
-      Powered by <strong>Prince Kumar Rathore</strong><br>
-      <small>"Real heroes wear boots, not capes."</small>
-    </div>
-  </div>
-
-  <!-- Footer Links -->
-  <div class="footer-links">
-    <a href="about.html">About</a> |
-    <a href="privacy.html">Privacy</a> |
-    <a href="terms.html">Terms</a> |
-    <a href="disclaimer.html">Disclaimer</a> |
+  <nav>
+    <a href="about.html">About</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+    <a href="disclaimer.html">Disclaimer</a>
     <a href="contact.html">Contact</a>
-  </div>
+  </nav>
 
-  <!-- Auto Redirect Script -->
-  <script>
-    let counter = 5;
-    const interval = setInterval(() => {
-      document.getElementById("count").innerText = counter;
-      counter--;
-      if (counter < 0) {
-        clearInterval(interval);
-        window.location.href = 'lltsindex.html';
-      }
-    }, 1000);
-  </script>
+  <main>
+    <section>
+      <h2>What is LLTS?</h2>
+      <p>
+        LLTS (Local Livelihood Tender System) is a platform designed to connect local workers, job seekers, students, and small business owners across India. Whether you're an electrician, plumber, painter, or a student posting an assignment job, LLTS offers a reliable system for tender posting and work completion.
+      </p>
+      <p>
+        Our mission is to support grassroots employment and make tender-based work accessible and secure. LLTS enables direct connection between owners and workers with no middleman, and fosters a trusted, community-driven work ecosystem.
+      </p>
+    </section>
+
+    <section class="cta-buttons">
+      <a href="ownerlogin.html">Login as Work Owner</a>
+      <a href="worker login.html">Login as Worker</a>
+      <a href="signup.html">Create New Account</a>
+    </section>
+
+    <section>
+      <h2>Platform Features</h2>
+      <ul>
+        <li>✅ Verified tender listings</li>
+        <li>✅ Worker profiles and ratings</li>
+        <li>✅ Real-time application system via whatsapp</li>
+        <li>✅ Student-friendly job posting</li>
+        <li>✅ no fake tenders or fake applies will be acceptable</li>
+      </ul> 
+    </section>
+
+    <!-- AdSense Block -->
+    <div class="ads">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-7342369119079593"
+           data-ad-slot="4926113294"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+  </main>
+
+  <footer>
+    <p>📩 For support, write to us at <a href="mailto:lltsreportsdevelopments@gmail.com">lltsreportsdevelopments@gmail.com</a></p>
+    <p class="brand-footer">Regards, S&P Developments</p>
+    <p>© 2025 LLTS Corporation. All rights reserved.</p>
+  </footer>
 
 </body>
 </html>

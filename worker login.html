@@ -1,220 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
   <meta charset="UTF-8" />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7342369119079593"
-     crossorigin="anonymous"></script>
-  <title>Worker Login - LLTS</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
- <style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
+  <title>Worker Login - LLTS</title>
+  <meta name="description" content="Login as worker on LLTS to find real-world work tenders and apply quickly.">
 
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7342369119079593" crossorigin="anonymous"></script>
 
-  html, body {
-    font-family: 'Orbitron', sans-serif;
-    height: 100%;
-    width: 100%;
-    min-height: 100vh;
-    background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow-x: hidden;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-    position: relative;
-  }
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
 
-  body::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%;
-    height: 100%;
-    background: url('https://www.transparenttextures.com/patterns/cubes.png');
-    opacity: 0.02;
-    animation: moveBackground 30s linear infinite;
-    z-index: 0;
-  }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  @keyframes moveBackground {
-    0% { background-position: 0 0; }
-    100% { background-position: 1000px 1000px; }
-  }
-
-  .login-container {
-    position: relative;
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(14px);
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 32px 22px;
-    width: 100%;
-    max-width: 360px;
-    box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
-    color: #fff;
-    text-align: center;
-    z-index: 2;
-  }
-
-  .login-container h2 {
-    font-size: 1.8rem;
-    color: gold;
-    margin-bottom: 20px;
-  }
-
-  .badge {
-    font-size: 2.6rem;
-    margin-bottom: 10px;
-    color: #ffcc00;
-    text-shadow: 1px 1px 10px #ffcc00aa;
-    animation: pulse 2s infinite ease-in-out;
-  }
-
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-  }
-
-  input {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    font-size: 1rem;
-    border-radius: 8px;
-    border: 1px solid #aaa;
-    background-color: rgba(255, 255, 255, 0.08);
-    color: white;
-    transition: all 0.3s ease;
-  }
-
-  input::placeholder {
-    color: #ccc;
-  }
-
-  input:focus {
-    outline: none;
-    border-color: gold;
-    box-shadow: 0 0 8px gold;
-    background-color: rgba(255, 255, 255, 0.12);
-  }
-
-  button {
-    width: 100%;
-    padding: 12px;
-    margin-top: 15px;
-    background: gold;
-    color: black;
-    font-weight: bold;
-    border: none;
-    font-size: 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s ease;
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
-  }
-
-  button:hover {
-    background: #e6c200;
-    box-shadow: 0 0 15px rgba(255, 255, 0, 0.6);
-  }
-
-  .error {
-    margin-top: 15px;
-    color: #ff4d4d;
-    font-size: 0.9rem;
-  }
-
-  .footer {
-    margin-top: 25px;
-    font-size: 0.75rem;
-    color: #bbb;
-  }
-
-  .footer small {
-    font-style: italic;
-  }
-
-  @media (max-width: 480px) {
     html, body {
-      flex-direction: column;
-      justify-content: flex-start;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
       align-items: center;
-      padding: 40px 10px 20px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: url('https://www.transparenttextures.com/patterns/cubes.png');
+      opacity: 0.02;
+      animation: moveBackground 30s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes moveBackground {
+      0% { background-position: 0 0; }
+      100% { background-position: 1000px 1000px; }
     }
 
     .login-container {
-      padding: 26px 16px;
-      margin-top: 60px;
+      position: relative;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(14px);
+      padding: 32px 22px;
+      max-width: 360px;
+      width: 100%;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+      color: #fff;
+      text-align: center;
+      z-index: 2;
     }
 
     .login-container h2 {
-      font-size: 1.4rem;
+      font-size: 1.8rem;
+      color: gold;
+      margin-bottom: 20px;
     }
 
     .badge {
-      font-size: 2.2rem;
+      font-size: 2.6rem;
+      margin-bottom: 10px;
+      color: #ffcc00;
+      text-shadow: 1px 1px 10px #ffcc00aa;
+      animation: pulse 2s infinite ease-in-out;
     }
 
-    input, button {
-      font-size: 0.95rem;
-      padding: 10px;
-      margin: 8px 0;
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #aaa;
+      background-color: rgba(255, 255, 255, 0.08);
+      color: white;
+      font-size: 1rem;
+    }
+
+    input::placeholder { color: #ccc; }
+
+    input:focus {
+      outline: none;
+      border-color: gold;
+      box-shadow: 0 0 8px gold;
+      background-color: rgba(255, 255, 255, 0.12);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      background: gold;
+      color: black;
+      font-weight: bold;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #e6c200;
+      box-shadow: 0 0 15px rgba(255, 255, 0, 0.6);
+    }
+
+    .error {
+      margin-top: 15px;
+      color: #ff4d4d;
+      font-size: 0.9rem;
     }
 
     .footer {
-      font-size: 0.68rem;
+      margin-top: 25px;
+      font-size: 0.75rem;
+      color: #bbb;
     }
-  }
 
-  .back-button {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    color: #ffd700;
-    font-size: 1rem;
-    text-decoration: none;
-    font-weight: bold;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 6px 12px;
-    border-radius: 8px;
-    z-index: 5;
-    box-shadow: 0 0 5px gold;
-    transition: background 0.3s ease;
-  }
+    .footer-links {
+      margin: 10px 0;
+      font-size: 0.8rem;
+    }
 
-  .back-button:hover {
-    background: rgba(255, 255, 255, 0.2);
-  }
-</style>
+    .footer-links a {
+      color: #fdd835;
+      margin: 0 6px;
+      text-decoration: none;
+    }
 
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
+
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      color: #ffd700;
+      font-size: 1rem;
+      text-decoration: none;
+      font-weight: bold;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 6px 12px;
+      border-radius: 8px;
+      z-index: 5;
+      box-shadow: 0 0 5px gold;
+    }
+
+    .back-button:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 26px 16px;
+        margin-top: 60px;
+      }
+
+      .login-container h2 { font-size: 1.4rem; }
+      .badge { font-size: 2.2rem; }
+    }
+  </style>
 </head>
 <body>
+
+  <a href="lltsindex.html" class="back-button">← Back</a>
+
   <div class="login-container">
     <div class="badge">🛠️</div>
     <h2>Worker Login</h2>
-     <div class="footer-links">
-    <a href="about.html">About</a> •
-    <a href="privacy.html">Privacy</a> •
-    <a href="terms.html">Terms</a> •
-    <a href="disclaimer.html">Disclaimer</a> •
-    <a href="contact.html">Contact</a>
-  </div>
+
     <form id="loginForm">
       <input type="text" id="username" placeholder="Username or Email" required />
       <input type="password" id="password" placeholder="Password" required />
       <button type="submit">Login</button>
     </form>
+
     <div id="errorMessage" class="error"></div>
+
+    <div class="footer-links">
+      <a href="about.html">About</a> •
+      <a href="privacy.html">Privacy</a> •
+      <a href="terms.html">Terms</a> •
+      <a href="disclaimer.html">Disclaimer</a> •
+      <a href="contact.html">Contact</a>
+    </div>
+
     <div class="footer">
       LOCAL LIVELIHOOD TENDER SYSTEM<br />
-      <small>Powered by Prince Sanj. Kumar Rathore</small>
+      <small>Powered by S&P Developments</small><br />
+      <a href="signup.html" style="color: #ffeb3b;">New here? Sign up →</a>
     </div>
   </div>
 
@@ -225,7 +210,7 @@
       try {
         return JSON.parse(atob(token.split('.')[1]));
       } catch (e) {
-        console.error("JWT parsing failed:", e);
+        console.warn("Invalid JWT token");
         return null;
       }
     }
@@ -257,13 +242,10 @@
           localStorage.setItem('role', data.role);
           localStorage.setItem('username', username);
 
-          const role = (data.role || '').toLowerCase();
-          if (role === 'worker') {
+          if ((data.role || '').toLowerCase() === 'worker') {
             window.location.href = 'worker-dashboard.html';
-          } else if (role === 'owner') {
-            window.location.href = 'ownerDashboard.html';
           } else {
-            errorBox.textContent = 'Login successful but unknown role.';
+            errorBox.textContent = 'Not a worker account.';
           }
         } else {
           errorBox.textContent = data.error || data.message || 'Invalid credentials.';
@@ -275,6 +257,6 @@
       }
     });
   </script>
-  <a href="lltsindex.html" class="back-button">← Back</a>
+
 </body>
 </html>

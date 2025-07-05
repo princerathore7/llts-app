@@ -1,22 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <title>Owner Login - LLTS</title>
+
+  <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7342369119079593"
      crossorigin="anonymous"></script>
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-format="fluid"
-     data-ad-layout-key="-6t+ed+2i-1n-4w"
-     data-ad-client="ca-pub-7342369119079593"
-     data-ad-slot="8550335988"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
+
+  <!-- Favicon -->
+  <link rel="icon" href="lltslogo.png" />
+
+  <!-- Styles -->
   <style>
     body {
       margin: 0;
@@ -58,11 +54,17 @@
     }
 
     .login-container h2 {
-      margin-bottom: 25px;
+      margin-bottom: 12px;
       color: #ffffff;
       font-weight: 600;
       font-size: 28px;
       letter-spacing: 1.5px;
+    }
+
+    .login-container p {
+      color: #ccc;
+      font-size: 14px;
+      margin-bottom: 20px;
     }
 
     label {
@@ -91,6 +93,18 @@
     input[type="password"]:focus {
       box-shadow: 0 0 12px #3498dbaa;
       background-color: #ffffff;
+    }
+
+    .password-container {
+      position: relative;
+    }
+
+    #togglePassword {
+      position: absolute;
+      right: 15px;
+      top: 15px;
+      cursor: pointer;
+      color: #555;
     }
 
     button.btn {
@@ -153,6 +167,21 @@
       padding: 0 10px;
     }
 
+    .footer-links {
+      font-size: 13px;
+      margin: 15px 0;
+    }
+
+    .footer-links a {
+      color: #f0e68c;
+      text-decoration: none;
+      margin: 0 5px;
+    }
+
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
+
     @keyframes slideIn {
       from { transform: translateY(-40px); opacity: 0; }
       to { transform: translateY(0px); opacity: 1; }
@@ -183,31 +212,54 @@
 
   <div class="app-name">Local Livelihood Tender System</div>
 
+  <!-- Google AdSense (wrapped safely) -->
+  <div style="width:100%; max-width:100%; margin:0 auto; padding: 10px 0;">
+  <ins class="adsbygoogle"
+      style="display:block; width:100%; height:auto;"
+      data-ad-client="ca-pub-7342369119079593"
+      data-ad-slot="8550335988"
+      data-ad-format="auto"
+      data-full-width-responsive="true"></ins>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+
   <div class="login-container">
     <h2>Owner Login</h2>
-     <div class="footer-links">
-    <a href="about.html">About</a> •
-    <a href="privacy.html">Privacy</a> •
-    <a href="terms.html">Terms</a> •
-    <a href="disclaimer.html">Disclaimer</a> •
-    <a href="contact.html">Contact</a>
-  </div>
+    <p>Login to post work tenders and connect with trusted workers.</p>
+
     <button class="signup-btn" onclick="window.location.href='signup.html'">New user? Sign up..</button>
-    
+
     <form id="ownerLoginForm">
       <label for="username">Username</label>
       <input type="text" id="username" name="username" placeholder="enter the username" required />
 
       <label for="password">Password</label>
-      <input type="password" id="password" name="password" placeholder="enter the password" required />
+      <div class="password-container">
+        <input type="password" id="password" name="password" placeholder="enter the password" required />
+        <span id="togglePassword">👁</span>
+      </div>
 
       <button type="submit" class="btn">Login</button>
     </form>
 
     <a href="#" class="forgot-password">Forgot Password?</a>
+
+    <div class="footer-links">
+      <a href="about.html">About</a> •
+      <a href="privacy.html">Privacy</a> •
+      <a href="terms.html">Terms</a> •
+      <a href="disclaimer.html">Disclaimer</a> •
+      <a href="contact.html">Contact</a>
+    </div>
   </div>
 
-  <div class="developer-credit"></div>
+  <div class="developer-credit">
+    Powered by S&P Developments<br>
+    © 2025 LLTS Corporation
+  </div>
 
   <script src="lltsscript.js"></script>
   <script>
@@ -265,6 +317,25 @@
         alert('Server error during login');
       }
     });
+
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordField = document.getElementById("password");
+
+    togglePassword.addEventListener("click", () => {
+      const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+      passwordField.setAttribute("type", type);
+      togglePassword.textContent = type === "password" ? "👁" : "🙈";
+    });
+    
   </script>
+<script>
+  setTimeout(() => {
+    const ad = document.querySelector('ins.adsbygoogle');
+    if (ad && ad.offsetHeight === 0) {
+      ad.style.display = 'none';
+    }
+  }, 3000); // Wait for ad to try loading
+</script>
+
 </body>
 </html>

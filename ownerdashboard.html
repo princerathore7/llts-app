@@ -227,6 +227,15 @@ header h1 {
 
 
 <body>
+  <script>
+  const token = localStorage.getItem('token');
+  const role = localStorage.getItem('role');
+
+  if (!token || role !== 'owner') {
+    alert("Unauthorized! Please login as Owner first.");
+    window.location.href = 'ownerlogin.html';  // Redirect to Owner login
+  }
+</script>
   <!-- ✅ Ad Block Wrapped in Visible Container -->
 <!-- Ad container with guaranteed size -->
 <div id="ad-wrapper" style="width:100%; min-width: 300px; min-height: 120px; background: #f9f9f9; text-align:center;">
@@ -818,3 +827,4 @@ document.addEventListener("DOMContentLoaded", loadAvailableWorkers);
     window.location.href = "owner-profile.html";
   });
 </script>
+
