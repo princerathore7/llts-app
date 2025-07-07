@@ -6,11 +6,11 @@
      crossorigin="anonymous"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-<script async custom-element="amp-auto-ads"
-        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
-</script>
-  <title>Worker Dashboard - LLTS</title>
 
+  <title>Worker Dashboard - LLTS</title>
+  <!-- ✅ Google AdSense Script (Single Instance) -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7342369119079593"
+     crossorigin="anonymous"></script>
 <style>
   * {
     box-sizing: border-box;
@@ -229,42 +229,20 @@
 
 
 </head>
-
 <body>
-<header>Worker Dashboard</header>
-  <button class="token-button" onclick="window.location.href='tokens.html'">
-  🎫 My Tokens
-</button>
-<amp-auto-ads type="adsense"
-        data-ad-client="ca-pub-7342369119079593">
-</amp-auto-ads>
-  <div id="token-balance" class="text-info" style="font-weight: 600;"></div>
+  <header>Worker Dashboard</header>
+  <p class="intro-text">Welcome to your personal dashboard! Track your tender applications, view available jobs, manage your profile, and grow your earnings with LLTS.</p>
 
   <button id="logoutBtn" class="logout-btn">🚪 Logout</button>
-  <button id="watchAdBtn" class="token-button">🎁 Watch Ad & Get 1 Token</button>
 
-
-  <section class="profile-summary">
-   <img src="https://cdn-icons-png.flaticon.com/512/4140/4140037.png" 
-     alt="Professional Avatar" 
-     style="width: 120px; border-radius: 50%; box-shadow: 0 0 10px rgba(0,0,0,0.15);" />
-
+  <div class="profile-summary">
+    <img src="https://cdn-icons-png.flaticon.com/512/4140/4140037.png" alt="Worker Avatar" />
     <h2 id="worker-name">Loading...</h2>
     <p id="worker-email">Email: ...</p>
     <p id="worker-location"></p>
     <p id="worker-exp">Experience: ...</p>
     <p id="worker-skills">Skills: ...</p>
-  </section>
-
-  <section>
-    <!-- Agreement Button -->
-<button onclick="window.location.href='promis.html'" class="action-btn">
-  <i class="bi bi-file-earmark-text"></i> View Agreement
-</button>
-
-    <h2>Your Applications</h2>
-    <div id="appliedJobsContainer" class="grid-cards"></div>
-  </section>
+  </div>
 
   <section class="stats">
     <div class="stat-card">
@@ -279,11 +257,6 @@
       <div class="stat-number" id="totalEarnings">₹0</div>
       <div class="stat-label">Total Earnings</div>
     </div>
-    <!-- How to Use Button -->
-<button onclick="window.location.href='how-to-use.html'" class="dashboard-btn">
-  <i class="fas fa-question-circle"></i> How to Use
-</button>
-
   </section>
 
   <section class="actions">
@@ -294,13 +267,30 @@
 
   <section>
     <h2>Available Jobs</h2>
-    <ul id="jobs-list" style="list-style: none; padding-left: 0;"></ul>
+    <ul id="jobs-list" style="list-style: none; padding-left: 0;">
+      <li>No jobs listed currently.</li>
+    </ul>
   </section>
 
   <section>
     <h2>My Active Jobs</h2>
-    <ul id="active-jobs-list" style="list-style: none; padding-left: 0;"></ul>
+    <ul id="active-jobs-list" style="list-style: none; padding-left: 0;">
+      <li>No active jobs right now.</li>
+    </ul>
   </section>
+
+  <!-- ✅ Safe Ad Placement -->
+  <div style="margin-top: 40px; text-align: center;">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-7342369119079593"
+         data-ad-slot="9714958433"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
 
   <footer>© 2025 LLTS — Developed by Prince Sanj. Kumar Rathore</footer>
 
@@ -378,9 +368,7 @@
 
       try {
         const res = await fetch(`${API_BASE}/worker/applied-count`, {
-          headers: {
-            "Authorization": `Bearer ${token}`
-          }
+          headers: { "Authorization": `Bearer ${token}` }
         });
 
         const data = await res.json();
@@ -396,21 +384,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       loadWorkerProfile();
-      fetchAppliedTenderCount(); // ✅ Added count fetch call
+      fetchAppliedTenderCount();
     });
   </script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7342369119079593"
-     crossorigin="anonymous"></script>
-<!-- worker dashboard ad -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-7342369119079593"
-     data-ad-slot="9714958433"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-  <script src="workerdashboard.js"></script>
-</body>
 </html>
