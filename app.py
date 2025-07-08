@@ -44,13 +44,16 @@ CORS(app,
 # ✅ Add CORS headers after every response
 @app.after_request
 def apply_cors_headers(response):
-    origin = request.headers.get("Origin")
-    if origin in ALLOWED_ORIGINS:
-        response.headers["Access-Control-Allow-Origin"] = origin
-        response.headers["Access-Control-Allow-Credentials"] = "true"
-        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+    origin = request.headers.get("Origin", "")
+    for allowed in ALLOWED_ORIGINS:
+        if origin.startswith(allowed):  # use startswith instead of exact match
+            response.headers["Access-Control-Allow-Origin"] = origin
+            response.headers["Access-Control-Allow-Credentials"] = "true"
+            response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+            response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+            break
     return response
+
 
 # ✅ Register Blueprints
 app.register_blueprint(auth_bp, url_prefix='/api')
