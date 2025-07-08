@@ -313,3 +313,30 @@ def update_owner_profile():
     except Exception as e:
         print("❌ Error updating profile:", e)
         return jsonify({"error": "Server error", "details": str(e)}), 500
+@owner_bp.route('/api/owner/available-workers', methods=['GET', 'OPTIONS'])
+@cross_origin(origins=ALLOWED_ORIGINS, supports_credentials=True)
+@jwt_required()
+def get_available_workers():
+    if request.method == "OPTIONS":
+        return jsonify({"message": "CORS preflight successful"}), 200
+
+    try:
+        workers = list(mongo.db.users.find({"role": "worker", "status": {"$ne": "disabled"}}))
+
+        result = []
+        for worker in workers:
+            result.append({
+                "_id": str(worker["_id"]),
+                "name": worker.get("name"),
+                "skills": worker.get("skills", []),
+                "location": worker.get("location", ""),
+                "contact": worker.get("contact", ""),
+                "experience": worker.get("experience", ""),
+                "profile_img": worker.get("profile_img", ""),
+            })
+
+        return jsonify({"workers": result}), 200
+
+    except Exception as e:
+        print("❌ Error in get_available_workers:", str(e))
+        return jsonify({"error": str(e)}), 500
